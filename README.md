@@ -1,8 +1,8 @@
 # Chainlink Python Serverless External Adapter Template
 
-![Lint and unit testing](https://github.com/thodges-gh/CL-EA-Python-Template/workflows/Lint%20and%20unit%20testing/badge.svg)
+![Lint and unit testing](https://github.com/Briojas/CL-EA-MQTT-Client/workflows/Lint%20and%20unit%20testing/badge.svg)
 
-This template shows a basic usecase of an external adapter written in Python for the CryptoCompare API. It can be ran locally, in Docker, AWS Lambda, or GCP Functions.
+This template shows a basic usecase of an external adapter written in Python for connecting a Smart Contract to an MQTT Broker. It can be ran locally, in Docker, AWS Lambda, or GCP Functions.
 
 ## Install
 
@@ -37,7 +37,7 @@ docker run -it -p 8080:8080 cl-ea
 ```bash
 pipenv lock -r > requirements.txt
 pipenv run pip install -r requirements.txt -t ./package
-pipenv run python -m zipfile -c cl-ea.zip main.py adapter.py bridge.py ./package/*
+pipenv run python -m zipfile -c cl-ea-mqtt.zip main.py adapter.py bridge.py ./package/*
 ```
 
 ### Install to AWS Lambda
@@ -49,7 +49,7 @@ pipenv run python -m zipfile -c cl-ea.zip main.py adapter.py bridge.py ./package
   - Choose an existing role or create a new one
   - Click Create Function
 - Under Function code, select "Upload a .zip file" from the Code entry type drop-down
-- Click Upload and select the `cl-ea.zip` file
+- Click Upload and select the `cl-ea-mqtt.zip` file
 - Change the Handler to `main.lambda_handler`
 - Save
 
@@ -82,7 +82,7 @@ An API Gateway is necessary for the function to be called by external services.
 - Optionally check the box to allow unauthenticated invocations
 - Choose ZIP upload under Source Code
 - Use Python 3.7 for the runtime
-- Click Browse and select the `cl-ea.zip` file
+- Click Browse and select the `cl-ea-mqtt.zip` file
 - Select a Storage Bucket to keep the zip in
 - Function to execute: `gcs_handler`
 - Click Create
