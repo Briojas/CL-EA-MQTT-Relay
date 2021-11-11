@@ -2,14 +2,14 @@ from bridge import Bridge
 
 
 class Adapter:
-    brokers = [‘mqtt.eclipse.org’, ‘test.mosquitto.org’, ‘broker.hivemq.com’]
+    brokers = ['mqtt.eclipse.org', 'test.mosquitto.org', 'broker.hivemq.com']
     port = 1883
     
         #See github.com/eclipse/Paho.mqtt.python for docs
-    actions = [‘connect’, ‘subscribe’, ‘publish’, ‘disconnect’]
-    connect_params = [‘clientID’, ‘cleanSession’, ‘protocol’, ‘transport’]
-    sub_params = [‘topic’, ‘qos’]
-    pub_params = [‘topic’, ‘payload’, ‘qos’, ‘retain’]
+    actions = ['connect', 'subscribe', 'publish', 'disconnect']
+    connect_params = ['clientID', 'cleanSession', 'protocol', 'transport']
+    sub_params = ['topic', 'qos']
+    pub_params = ['topic', 'payload', 'qos', 'retain']
 
     def __init__(self, input):
         self.id = input.get('id', '1')
