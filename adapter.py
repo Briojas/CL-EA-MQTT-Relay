@@ -2,17 +2,25 @@ from bridge import Bridge
 
 
 class Adapter:
-    brokers = ['mqtt.eclipse.org', 'test.mosquitto.org', 'broker.hivemq.com']
-    port = 1883
+    brokers = [{
+        “Host”: ‘mqtt.eclipse.org’,
+        “Port”: 1883,
+        “User”: eclipseUserName,
+        “API”: ECLIPSE_API_KEY
+    },{
+        “Host”: ‘test.mosquitto.org’,
+    },{
+        “Host”: ‘broker.hivemq.com’]
+    }]
     
+    actions = [‘subscribe’, ‘publish’]
         #See github.com/eclipse/Paho.mqtt.python for docs
-    actions = ['connect', 'subscribe', 'publish', 'disconnect']
-    connect_params = ['clientID', 'cleanSession', 'protocol', 'transport']
-    sub_params = ['topic', 'qos']
-    pub_params = ['topic', 'payload', 'qos', 'retain']
+    subscribe_params = ['topic', 'qos']
+    publish_params = ['payload', 'retain']
 
     def __init__(self, input):
-        self.id = input.get('id', '1')
+        
+        self.id = input.get('id', 'NONE')
         self.request_data = input.get('data')
         if self.validate_request_data():
             self.bridge = Bridge()
@@ -29,7 +37,9 @@ class Adapter:
         return True
 
     def set_params(self):
-        for param in self.from_params:
+        for action in self.request_data:
+            for param in action:
+                
             self.from_param = self.request_data.get(param)
             if self.from_param is not None:
                 break
