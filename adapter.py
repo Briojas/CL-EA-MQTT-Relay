@@ -3,29 +3,41 @@ from bridge import Bridge
 
 class Adapter:
     brokers = [{
-        “Host”: ‘mqtt.eclipse.org’,
-        “Port”: 1883,
-        “User”: eclipseUserName,
-        “API”: ECLIPSE_API_KEY
+        'Host': 'mqtt.eclipse.org',
+        'Port': 1883,
+        'User': eclipseUserName,
+        'API': ECLIPSE_API_KEY
     },{
-        “Host”: ‘test.mosquitto.org’,
+        'Host': 'test.mosquitto.org',
+        'Port': 1883,
+        'User': eclipseUserName,
+        'API': ECLIPSE_API_KEY
     },{
-        “Host”: ‘broker.hivemq.com’]
+        'Host': 'broker.hivemq.com',
+        'Port': 1883,
+        'User': eclipseUserName,
+        'API': ECLIPSE_API_KEY
     }]
-    
-    actions = [‘subscribe’, ‘publish’]
-        #See github.com/eclipse/Paho.mqtt.python for docs
-    subscribe_params = ['topic', 'qos']
-    publish_params = ['payload', 'retain']
+    action_list = ['subscribe', 'publish']
+    action = ''
+    subs_def = {
+        'topics': [], 
+        'qos': 0
+    }
+    pub_msg_def = {
+        'topic': '',
+        'qos': 0, 
+        'payload': '', 
+        'retain': True
+    }
 
     def __init__(self, input):
-        
         self.id = input.get('id', 'NONE')
         self.request_data = input.get('data')
         if self.validate_request_data():
-            self.bridge = Bridge()
-            self.set_params()
+            self.id_action()
             self.create_request()
+            self.bridge = Bridge()
         else:
             self.result_error('No data provided')
 
@@ -36,16 +48,10 @@ class Adapter:
             return False
         return True
 
-    def set_params(self):
-        for action in self.request_data:
-            for param in action:
-                
-            self.from_param = self.request_data.get(param)
-            if self.from_param is not None:
-                break
-        for param in self.to_params:
-            self.to_param = self.request_data.get(param)
-            if self.to_param is not None:
+    def id_action(self):
+        for action in self.actions:
+            if self.request_data[action] is not None:
+                self.action = action
                 break
 
     def create_request(self):
