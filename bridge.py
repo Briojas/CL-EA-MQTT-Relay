@@ -1,36 +1,56 @@
-import requests
-from requests.adapters import HTTPAdapter
-from requests.packages.urllib3.util.retry import Retry
-
+import paho.mqtt as mqtt
 
 class Bridge(object):
 
+    messages = {}
+
+    def callback(client, userdata, message):
+
     def __init__(
         self,
-        retries=3,
-        backoff_factor=0.3,
-        status_forcelist=(500, 502, 504),
+        host,
+        port,
+        user = None,
+        key = None,
+        ca_certs = None,
+        cert_file = None,
+        key_file = None,
+        tls_version = None,
+        ciphers = None
     ):
-        self.session = requests.Session()
-        retry = Retry(
-            total=retries,
-            read=retries,
-            connect=retries,
-            backoff_factor=backoff_factor,
-            status_forcelist=status_forcelist,
-        )
-        adapter = HTTPAdapter(max_retries=retry)
-        self.session.mount('http://', adapter)
-        self.session.mount('https://', adapter)
+        self.host = host
+        self.port = port
+        
+        self.will = { #not currently implemented
+            'topic': '',
+            'payload': '',
+            'qos': '',
+            'retain': ''
+        }
+        
+        self.auth = {
+            'username': user,
+            'password': key
+        }
 
-    def request(self, url, params={}, headers={}, timeout=15):
-        try:
-            return self.session.get(url,
-                                    params=params,
-                                    headers=headers,
-                                    timeout=timeout)
-        except Exception as e:
-            raise e
+        self.tls = {
+            'ca_certs': ca_certs,
+            'certfile': cert_file,
+            'keyfile': key_file,
+            'tls_version': tls_version,
+            'ciphers': ciphers
+        }
 
-    def close(self):
-        self.session.close()
+        
+    def subscribe(self, data):
+        #build messages dict
+
+        #subscribe
+
+    def publish(self, data):
+        #publish
+        mqtt.publish.multiple(messages,)
+        #save success/failure response to messages
+
+    #def disconnect(self):
+        #disconnect from broker

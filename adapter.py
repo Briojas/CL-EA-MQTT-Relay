@@ -2,25 +2,21 @@ from bridge import Bridge
 
 
 class Adapter:
-    bridges = [{
-        'bridge': None,
-        'host': 'mqtt.eclipse.org',
-        'port': 1883,
-        'user': eclipseUserName,
-        'key': ECLIPSE_API_KEY
-    },{
-        'bridge': None,
-        'host': 'test.mosquitto.org',
-        'port': 1883,
-        'user': eclipseUserName,
-        'key': ECLIPSE_API_KEY
-    },{
-        'bridge': None,
-        'host': 'broker.hivemq.com',
-        'port': 1883,
-        'user': eclipseUserName,
-        'key': ECLIPSE_API_KEY
-    }]
+    bridges = [
+        Bridge(
+            'mqtt.eclipse.org', 
+            1883
+        ),
+        Bridge(
+            'test.mosquitto.org', 
+            1883
+        ),
+        Bridge(
+            'broker.hivemq.com', 
+            1883
+        )
+    ]
+
     action_list = ['subscribe', 'publish']
     action = ''
     subs_def = {
@@ -40,7 +36,7 @@ class Adapter:
         if self.validate_request_data():
             if self.id_action():
                 self.build_bridges()
-                self.create_request()
+                self.measure_consensus()
             else:
                 self.result_error('Invalid action provided')
         else:
@@ -53,15 +49,6 @@ class Adapter:
             return False
         return True
 
-    def build_bridges(self):
-        for bridge in self.bridges:
-            bridge['bridge'] = Bridge(
-                bridge['host'],
-                bridge['port'],
-                bridge['user'],
-                bridge['key']
-            )
-
     def id_action(self):
         for action in self.actions:
             if self.request_data[action] is not None:
@@ -69,7 +56,13 @@ class Adapter:
                 return True
         return False
 
-    def create_request(self):
+    def build_bridges(self):
+        for bridge in self.bridges:
+            for action in self.action_list:
+                if self.action == action:
+                    getattr(bridge, action)(*self.request_data)
+
+    def measure_consensus(self):
         try:
             params = {
                 'fsym': self.from_param,
