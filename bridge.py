@@ -1,8 +1,19 @@
 import paho.mqtt as mqtt
+from typing import NamedTuple
+
+class Subs(NamedTuple):
+    topics: list
+    qos: int
+
+class Pub(NamedTuple):
+    topic: str
+    qos: int
+    payload: str
+    retain: bool
 
 class Bridge(object):
 
-    messages = {}
+    messages = []
 
     def callback(client, userdata, message):
 
@@ -21,12 +32,7 @@ class Bridge(object):
         self.host = host
         self.port = port
         
-        self.will = { #not currently implemented
-            'topic': '',
-            'payload': '',
-            'qos': '',
-            'retain': ''
-        }
+        #self.will = Pub('',0,'',False) 
         
         self.auth = {
             'username': user,
@@ -44,6 +50,7 @@ class Bridge(object):
         
     def subscribe(self, data):
         #build messages dict
+        subs = Subs([],)
 
         #subscribe
 

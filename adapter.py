@@ -19,16 +19,6 @@ class Adapter:
 
     action_list = ['subscribe', 'publish']
     action = ''
-    subs_def = {
-        'topics': [], 
-        'qos': 0
-    }
-    pub_msg_def = {
-        'topic': '',
-        'qos': 0, 
-        'payload': '', 
-        'retain': True
-    }
 
     def __init__(self, input):
         self.id = input.get('id', 'NONE')
