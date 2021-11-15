@@ -2,17 +2,31 @@ import pytest
 import adapter
 
 job_run_id = '1'
-
+topics = [
+    '/cl-ea-mqtt-client/test1',
+    '/cl-ea-mqtt-client/test2',
+    '/cl-ea-mqtt-client/test3',
+]
 
 def adapter_setup(test_data):
     a = adapter.Adapter(test_data)
     return a.result
 
-
 @pytest.mark.parametrize('test_data', [
-    {'id': job_run_id, 'data': {'base': 'ETH', 'quote': 'USD'}},
-    {'id': job_run_id, 'data': {'from': 'ETH', 'to': 'USD'}},
-    {'id': job_run_id, 'data': {'coin': 'ETH', 'market': 'USD'}},
+        #publish single
+    {'id': job_run_id, 'data': {'publish': [
+        {'topic': topics[0], 'qos': 0, 'payload': 'testMessage', 'retain': True}
+    ]}},
+        #subscribe single
+    {'id': job_run_id, 'data': {'subscribe':{'topics':[topics[0]], 'qos':0}}},
+        #publish multiple
+    {'id': job_run_id, 'data': {'publish': [
+        {'topic': topics[0], 'qos': 0, 'payload': 'testMessage', 'retain': True},
+        {'topic': topics[1], 'qos': 0, 'payload': 'testMessage', 'retain': True},
+        {'topic': topics[2], 'qos': 0, 'payload': 'testMessage', 'retain': True}
+    ]}},
+        #subscribe multiple
+    {'id': job_run_id, 'data': {'subscribe':{'topics': topics, 'qos':0}}},
 ])
 def test_create_request_success(test_data):
     result = adapter_setup(test_data)

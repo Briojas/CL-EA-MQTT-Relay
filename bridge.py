@@ -75,6 +75,10 @@ class Bridge(object):
             tls = self.tls
         )
 
+        self.messages.append({
+            'status': 'subscribed'
+        })
+
 
     def publish(self, data):
         
@@ -95,7 +99,7 @@ class Bridge(object):
             auth=self.auth,
             tls=self.tls
         )
-        #save success/failure response to messages
-
-    #def disconnect(self):
-        #disconnect from broker
+        
+        self.messages.append({
+            'status': 'published'
+        })

@@ -19,6 +19,7 @@ class Adapter:
 
     action_list = ['subscribe', 'publish']
     action = ''
+    final_message = {}
 
     def __init__(self, input):
         self.id = input.get('id', 'NONE')
@@ -27,6 +28,7 @@ class Adapter:
             if self.id_action():
                 self.build_bridges()
                 self.measure_consensus()
+                self.bridges = None
             else:
                 self.result_error('Invalid action provided')
         else:
@@ -40,7 +42,7 @@ class Adapter:
         return True
 
     def id_action(self):
-        for action in self.actions:
+        for action in self.action_list:
             if self.request_data[action] is not None:
                 self.action = action
                 return True
@@ -50,23 +52,21 @@ class Adapter:
         for bridge in self.bridges:
             for action in self.action_list:
                 if self.action == action:
-                    getattr(bridge, action)(*self.request_data)
+                    try:
+                        getattr(bridge, action)(*self.request_data)
+                    except Exception as e:
+                        self.result_error(e)
 
     def measure_consensus(self):
-        try:
-            params = {
-                'fsym': self.from_param,
-                'tsyms': self.to_param,
-            }
-            response = self.bridge.request(self.base_url, params)
-            data = response.json()
-            self.result = data[self.to_param]
-            data['result'] = self.result
-            self.result_success(data)
-        except Exception as e:
-            self.result_error(e)
-        finally:
-            self.bridge.close()
+        params = {
+            'fsym': self.from_param,
+            'tsyms': self.to_param,
+        }
+        response = self.bridge.request(self.base_url, params)
+        data = response.json()
+        self.result = data[self.to_param]
+        data['result'] = self.result
+        self.result_success(data)
 
     def result_success(self, data):
         self.result = {
