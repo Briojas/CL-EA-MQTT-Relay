@@ -1,4 +1,5 @@
-import paho.mqtt as mqtt
+import paho.mqtt.subscribe as subscribe
+import paho.mqtt.publish as publish
 from typing import NamedTuple
 
 class Subs(NamedTuple):
@@ -15,7 +16,11 @@ class Bridge(object):
 
     messages = []
 
-    def callback(client, userdata, message):
+    def callback(self, client, userdata, message):
+        for topic in self.messages:
+            if topic['topic'] == message.topic:
+                topic['payload'] = message.payload
+                break
 
     def __init__(
         self,
@@ -32,31 +37,64 @@ class Bridge(object):
         self.host = host
         self.port = port
         
-        #self.will = Pub('',0,'',False) 
-        
-        self.auth = {
-            'username': user,
-            'password': key
-        }
+        #self.will = Pub('',0,'',False) #not implemented
 
-        self.tls = {
-            'ca_certs': ca_certs,
-            'certfile': cert_file,
-            'keyfile': key_file,
-            'tls_version': tls_version,
-            'ciphers': ciphers
-        }
+        self.auth = None
+        if user and key:
+            self.auth = {
+                'username': user,
+                'password': key
+            }
+
+        self.tls = None
+        if ca_certs: #only ca_certs needed for tls
+            self.tls = {
+                'ca_certs': ca_certs,
+                'certfile': cert_file,
+                'keyfile': key_file,
+                'tls_version': tls_version,
+                'ciphers': ciphers
+            }
 
         
     def subscribe(self, data):
-        #build messages dict
-        subs = Subs([],)
+        subs = Subs(data['subscribe']['topics'],data['subscribe']['qos'])
+        for topic in subs.topics:
+            self.messages.append({
+                'topic': topic,
+                'payload': ''
+            })
+        
+        subscribe.callback(
+            self.callback, 
+            subs.topics, 
+            subs.qos, 
+            hostname = self.host,
+            port = self.port,
+            auth = self.auth,
+            tls = self.tls
+        )
 
-        #subscribe
 
     def publish(self, data):
-        #publish
-        mqtt.publish.multiple(messages,)
+        
+        for topic in data['publish']:
+            self.messages.append(
+                Pub(
+                    topic['topic'],
+                    topic['qos'],
+                    topic['payload'],
+                    topic['retain']
+                )
+            )
+        
+        publish.multiple(
+            self.messages,
+            hostname=self.host,
+            port=self.port,
+            auth=self.auth,
+            tls=self.tls
+        )
         #save success/failure response to messages
 
     #def disconnect(self):
