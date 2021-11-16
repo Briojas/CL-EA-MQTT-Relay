@@ -19,54 +19,56 @@ class Adapter:
 
     action_list = ['subscribe', 'publish']
     action = ''
-    final_message = {}
+    error = False
 
     def __init__(self, input):
         self.id = input.get('id', 'NONE')
         self.request_data = input.get('data')
-        if self.validate_request_data():
-            if self.id_action():
-                self.build_bridges()
-                self.measure_consensus()
-                self.bridges = None
-            else:
-                self.result_error('Invalid action provided')
-        else:
-            self.result_error('No data provided')
+        
+        self.validate_request_data()
+        self.id_action()
+        self.build_bridges()
+        self.measure_consensus()
 
     def validate_request_data(self):
-        if self.request_data is None:
-            return False
-        if self.request_data == {}:
-            return False
-        return True
+        if self.request_data is None or self.request_data == {}:
+            self.result_error('No data provided')
 
     def id_action(self):
-        for action in self.action_list:
-            if self.request_data[action] is not None:
-                self.action = action
-                return True
-        return False
+        if not self.error:
+            for action in self.action_list:
+                if self.request_data[action] is not None:
+                    self.action = action
+                    return
+            self.result_error('Invalid action provided')
 
     def build_bridges(self):
-        for bridge in self.bridges:
-            for action in self.action_list:
-                if self.action == action:
-                    try:
-                        getattr(bridge, action)(*self.request_data)
-                    except Exception as e:
-                        self.result_error(e)
+        if not self.error:
+            for bridge in self.bridges:
+                for action in self.action_list:
+                    if self.action == action:
+                        try:
+                            getattr(bridge, action)(*self.request_data)
+                        except Exception as e:
+                            self.result_error(e)
 
     def measure_consensus(self):
-        params = {
-            'fsym': self.from_param,
-            'tsyms': self.to_param,
+        consensus = {
+            'subscribe': [],
+            'publish': 0
         }
-        response = self.bridge.request(self.base_url, params)
-        data = response.json()
-        self.result = data[self.to_param]
-        data['result'] = self.result
-        self.result_success(data)
+        if not self.error:
+            for bridge in self.bridges:
+                if self.action == 'subscribe':
+                    response = self.bridge.request(self.base_url, params)
+                    data = response.json()
+                if self.action == 'publish':
+                    if
+            self.result = data[self.to_param]
+            data['result'] = self.result
+            self.result_success(data)
+        
+        self.bridges = None
 
     def result_success(self, data):
         self.result = {
@@ -77,6 +79,7 @@ class Adapter:
         }
 
     def result_error(self, error):
+        self.error = True
         self.result = {
             'jobRunID': self.id,
             'status': 'errored',
