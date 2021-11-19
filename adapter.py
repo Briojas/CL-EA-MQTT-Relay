@@ -1,5 +1,7 @@
-from bridge import Bridge
+import statistics
 
+from attr import validate
+from bridge import Bridge
 
 class Adapter:
     bridges = [
@@ -80,14 +82,42 @@ class Adapter:
         
         self.bridges = None #clearing bridge connections
 
-    def measure_consensus(self, list):
-        measurement = {
-            'value': None,
-            'num': None,
-            'stdDev': None
-        }
-        for item in list:
-
+    def measure_consensus(self, values):
+        for item in values:
+            strData = type(item) is str
+            if strData:
+                break
+        
+        if strData:
+            strings = [
+                {
+                    'value': values[0],
+                    'count': 0 #about to count it
+                }
+            ]
+            for item in values:
+                for value in strings:
+                    if value['value'] == item:
+                        value['count'] = value['count'] + 1
+                        break
+            count = 0
+            for value in strings:
+                if value['count'] > count:
+                    string = value['value']
+                    count = value[count]
+            measurement = {
+                'value': string,
+                'agreed': count/len(values),
+                'bridges': len(values)
+            }
+        else:
+            measurement = {
+                'value': statistics.mean(values),
+                'stdev': statistics.stdev(values),
+                'variance': statistics.variance(values),
+                'bridges': len(values)
+            }
+        return measurement
 
     def result_success(self, data):
         self.result = {
