@@ -18,7 +18,6 @@ class Adapter:
     ]
 
     action_list = ['subscribe', 'publish']
-    action = ''
     error = False
 
     def __init__(self, input):
@@ -28,7 +27,7 @@ class Adapter:
         self.validate_request_data()
         self.id_action()
         self.build_bridges()
-        self.measure_consensus()
+        self.build_consensus()
 
     def validate_request_data(self):
         if self.request_data is None or self.request_data == {}:
@@ -52,23 +51,43 @@ class Adapter:
                         except Exception as e:
                             self.result_error(e)
 
-    def measure_consensus(self):
-        consensus = {
-            'subscribe': [],
-            'publish': 0
-        }
+    def build_consensus(self):
+        consensus = []
+        responses = []
+        data = []
         if not self.error:
             for bridge in self.bridges:
-                if self.action == 'subscribe':
-                    response = self.bridge.request(self.base_url, params)
-                    data = response.json()
-                if self.action == 'publish':
-                    if
-            self.result = data[self.to_param]
-            data['result'] = self.result
+                responses.append(bridge.result)
+                for topic in bridge.messages:
+                    create_measure = True
+                    for measure in consensus:
+                        if measure['topic'] == topic['topic']:
+                            measure['payloads'].append(topic['payload'])
+                            create_measure = False
+                            break
+                    if create_measure:
+                        consensus.append(
+                            {
+                                'topic': topic['topic'],
+                                'payload': []
+                            }
+                        )
+            
+            self.result = self.measure_consensus(responses)
+            for measure in consensus:
+                data.append(self.measure_consensus(measure['payload']))
             self.result_success(data)
         
-        self.bridges = None
+        self.bridges = None #clearing bridge connections
+
+    def measure_consensus(self, list):
+        measurement = {
+            'value': None,
+            'num': None,
+            'stdDev': None
+        }
+        for item in list:
+
 
     def result_success(self, data):
         self.result = {

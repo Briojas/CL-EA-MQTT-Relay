@@ -5,7 +5,7 @@ from typing import NamedTuple
 class Bridge(object):
 
     messages = []
-
+    result = 'failed'
     def callback(self, client, userdata, message): #pass 'self' into userdata?
         for topic in self.messages:
             if topic['topic'] == message.topic:
@@ -64,10 +64,7 @@ class Bridge(object):
             tls = self.tls
         )
 
-        self.messages.append({
-            'status': 'subscribed'
-        })
-
+        self.result = 'subscribed'
 
     def publish(self, data):
         
@@ -82,6 +79,4 @@ class Bridge(object):
             tls=self.tls
         )
         
-        self.messages.append({
-            'status': 'published'
-        })
+        self.result = 'published'
