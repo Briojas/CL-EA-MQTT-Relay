@@ -2,21 +2,11 @@ import paho.mqtt.subscribe as subscribe
 import paho.mqtt.publish as publish
 from typing import NamedTuple
 
-class Subs(NamedTuple):
-    topics: list
-    qos: int
-
-class Pub(NamedTuple):
-    topic: str
-    qos: int
-    payload: str
-    retain: bool
-
 class Bridge(object):
 
     messages = []
 
-    def callback(self, client, userdata, message):
+    def callback(self, client, userdata, message): #pass 'self' into userdata?
         for topic in self.messages:
             if topic['topic'] == message.topic:
                 topic['payload'] = message.payload
@@ -58,8 +48,7 @@ class Bridge(object):
 
         
     def subscribe(self, data):
-        subs = Subs(data['subscribe']['topics'],data['subscribe']['qos'])
-        for topic in subs.topics:
+        for topic in data['subscribe']['topics']:
             self.messages.append({
                 'topic': topic,
                 'payload': ''
@@ -67,8 +56,8 @@ class Bridge(object):
         
         subscribe.callback(
             self.callback, 
-            subs.topics, 
-            subs.qos, 
+            data['subscribe']['topics'], 
+            data['subscribe']['qos'], 
             hostname = self.host,
             port = self.port,
             auth = self.auth,
@@ -83,14 +72,7 @@ class Bridge(object):
     def publish(self, data):
         
         for topic in data['publish']:
-            self.messages.append(
-                Pub(
-                    topic['topic'],
-                    topic['qos'],
-                    topic['payload'],
-                    topic['retain']
-                )
-            )
+            self.messages.append(topic)
         
         publish.multiple(
             self.messages,
