@@ -19,14 +19,14 @@ def adapter_setup(test_data):
     ]}},
         #subscribe single string
     {'id': job_run_id, 'data': {'subscribe':{'topics':[topics[0]], 'qos':0}}},
-    #     #publish multiple strings
-    # {'id': job_run_id, 'data': {'publish': [
-    #     {'topic': topics[0], 'qos': 0, 'payload': 'testMessage', 'retain': True},
-    #     {'topic': topics[1], 'qos': 0, 'payload': 'testMessage', 'retain': True},
-    #     {'topic': topics[2], 'qos': 0, 'payload': 'testMessage', 'retain': True}
-    # ]}},
-    #     #subscribe multiple strings
-    # {'id': job_run_id, 'data': {'subscribe':{'topics': topics, 'qos':0}}},
+        #publish multiple strings
+    {'id': job_run_id, 'data': {'publish': [
+        {'topic': topics[0], 'qos': 0, 'payload': 'testMessage', 'retain': True},
+        {'topic': topics[1], 'qos': 0, 'payload': 'testMessage', 'retain': True},
+        {'topic': topics[2], 'qos': 0, 'payload': 'testMessage', 'retain': True}
+    ]}},
+        #subscribe multiple strings
+    {'id': job_run_id, 'data': {'subscribe':{'topics': topics, 'qos':0}}},
 ])
 def test_create_request_success(test_data):
     result = adapter_setup(test_data)
@@ -35,7 +35,7 @@ def test_create_request_success(test_data):
     assert result['jobRunID'] == job_run_id
     for topic in result['data']:
         assert topic['payload']['value'] == 'testMessage'
-        assert topic['payload']['value'] >= 0.5
+        assert topic['payload']['agreed'] >= 0.5
     assert type(result['result']) is dict
 
 

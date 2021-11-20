@@ -1,25 +1,42 @@
 import paho.mqtt.client as mqtt
-from typing import NamedTuple
 
 class Bridge(object):
+    def on_connect(self, client, userdata, flags, rc):
+        if rc == self.response['mid']:
+            self.response['pending'] = False
+        else:
+            self.response['error'] = rc
 
-    def on_message(self, client, userdata, message): #pass 'self' into userdata?
-        print('message: ' + message)
+    def on_message(self, client, userdata, message): 
         for topic in self.messages:
             if topic['topic'] == message.topic:
-                topic['payload'] = message.payload
+                received = str(message.payload, 'UTF-8')
+                if received.isnumeric():
+                    if received.find('.') > 0:
+                        topic['payload'] = float(received)
+                    else:
+                        topic['payload'] = int(received)
+                else:
+                    topic['payload'] = str(received)
                 break
 
     def on_publish(self, client, userdata, mid):
-        print('published: ' + str(mid))
         if mid == self.response['mid']:
             self.response['pending'] = False
-
+        else:
+            self.response['error'] = mid
 
     def on_subscribe(self, client, userdata, mid, granted_qos):
-        print('subscribed: ' + str(mid) + ' @qos: ' + str(granted_qos))
         if mid == self.response['mid']:
             self.response['pending'] = False
+        else:
+            self.response['error'] = mid
+
+    def on_disconnect(self, client, userdata, rc):
+        if rc == self.response['mid']:
+            self.response['pending'] = False
+        else:
+            self.response['error'] = rc
 
     def __init__(
         self,
@@ -30,37 +47,41 @@ class Bridge(object):
     ):
         self.messages = []
         self.result = 'failed'
-        self.reset_callback_status()
         
         self.client = mqtt.Client()
 
         if user and key:
             self.client.username_pw_set(user, key)
         
+        self.client.on_connect = self.on_connect
         self.client.on_message = self.on_message
         self.client.on_publish = self.on_publish
         self.client.on_subscribe = self.on_subscribe
+        self.client.on_disconnect = self.on_disconnect
 
         self.client.connect(host, port)
         self.client.loop_start()
+        self.wait_for_broker(0)
+        self.disconnected = False
         
     def subscribe(self, data):
+        if self.disconnected:
+            self.reconnect()
         for topic in data['subscribe']['topics']:
             self.messages.append({
                 'topic': topic,
-                'payload': ''
+                'payload': None
             })
             response = self.client.subscribe(
                 topic,
                 data['subscribe']['qos']
             )
-            self.response['mid'] = response[1]
-            while(self.response['pending']):
-                pass
-            self.reset_callback_status()
+            self.wait_for_broker(response[1])
         self.result = 'subscribed'
 
     def publish(self, data):
+        if self.disconnected:
+            self.reconnect()
         for topic in data['publish']:
             self.messages.append(topic)
             response = self.client.publish(
@@ -69,18 +90,35 @@ class Bridge(object):
                         topic['qos'],
                         topic['retain']
                     )
-            self.response['mid'] = response[1]
-            while(self.response['pending']):
-                pass
-            self.reset_callback_status()
+            self.wait_for_broker(response[1])
         self.result = 'published'
 
-    def reset_callback_status(self):
+    def wait_for_broker(self, mid):
         self.response = {
             'pending': True,
-            'mid': None
+            'mid': mid,
+            'error': None
+        }
+        while(self.response['pending']):
+            #TODO: Error handling on failing broker responses
+            if self.response['error'] is not None:
+                break
+            pass
+        self.response = {
+            'pending': True,
+            'mid': None,
+            'error': None
         }
 
     def disconnect(self):
-        self.client.loop_stop()
         self.client.disconnect()
+        self.wait_for_broker(0)
+        self.client.loop_stop(True)
+        self.messages = []
+        self.disconnected = True
+
+    def reconnect(self):
+        self.client.reconnect()
+        self.client.loop_start()
+        self.wait_for_broker(0)
+        self.disconnected = False

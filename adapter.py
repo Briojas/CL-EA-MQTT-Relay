@@ -6,9 +6,15 @@ from bridge import Bridge
 class Adapter:
     bridges = [
         Bridge(
-            'broker.mqttdashboard.com', 
-            8000
+            'cl-ea-mqtt-test.cloud.shiftr.io', 
+            1883,
+            'cl-ea-mqtt-test',
+            'roW522qXIMaMgKc2'
         ),
+        # Bridge(
+        #     'broker.mqttdashboard.com', 
+        #     8000
+        # ),
         Bridge(
             'test.mosquitto.org', 
             1883
@@ -74,18 +80,19 @@ class Adapter:
                                 'payload': [topic['payload']]
                             }
                         )
-            print(consensus)
             self.result = self.measure_consensus(responses)
             for measure in consensus:
                 measure['payload'] = self.measure_consensus(measure['payload'])
             self.result_success(consensus)
 
     def measure_consensus(self, values):
+        str_type = False
         for item in values:
-            strData = type(item) is str
-            if strData:
-                break
-        if strData:
+            if type(item) is str:
+                str_type = True
+            elif item is None:
+                values.pop(values.index(item))
+        if str_type:
             strings = [
                 {
                     'value': values[0],
@@ -105,14 +112,14 @@ class Adapter:
             measurement = {
                 'value': string,
                 'agreed': count/len(values),
-                'bridges': len(values)
+                'reporting': len(values)/len(self.bridges)
             }
         else:
             measurement = {
                 'value': statistics.mean(values),
                 'stdev': statistics.stdev(values),
                 'variance': statistics.variance(values),
-                'bridges': len(values)
+                'reporting': len(values)/len(self.bridges)
             }
         return measurement
 
