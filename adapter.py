@@ -6,8 +6,8 @@ from bridge import Bridge
 class Adapter:
     bridges = [
         Bridge(
-            'mqtt.eclipse.org', 
-            1883
+            'broker.mqttdashboard.com', 
+            8000
         ),
         Bridge(
             'test.mosquitto.org', 
@@ -18,18 +18,19 @@ class Adapter:
             1883
         )
     ]
-
     action_list = ['subscribe', 'publish']
+    action = ''
     error = False
 
     def __init__(self, input):
         self.id = input.get('id', 'NONE')
-        self.request_data = input.get('data')
+        self.request_data = [input.get('data')]
         
         self.validate_request_data()
         self.id_action()
-        self.build_bridges()
+        self.build_bridge()
         self.build_consensus()
+        self.burn_bridge()
 
     def validate_request_data(self):
         if self.request_data is None or self.request_data == {}:
@@ -38,12 +39,12 @@ class Adapter:
     def id_action(self):
         if not self.error:
             for action in self.action_list:
-                if self.request_data[action] is not None:
+                if action in self.request_data[0]:
                     self.action = action
                     return
             self.result_error('Invalid action provided')
 
-    def build_bridges(self):
+    def build_bridge(self):
         if not self.error:
             for bridge in self.bridges:
                 for action in self.action_list:
@@ -56,7 +57,6 @@ class Adapter:
     def build_consensus(self):
         consensus = []
         responses = []
-        data = []
         if not self.error:
             for bridge in self.bridges:
                 responses.append(bridge.result)
@@ -64,30 +64,27 @@ class Adapter:
                     create_measure = True
                     for measure in consensus:
                         if measure['topic'] == topic['topic']:
-                            measure['payloads'].append(topic['payload'])
+                            measure['payload'].append(topic['payload'])
                             create_measure = False
                             break
                     if create_measure:
                         consensus.append(
                             {
                                 'topic': topic['topic'],
-                                'payload': []
+                                'payload': [topic['payload']]
                             }
                         )
-            
+            print(consensus)
             self.result = self.measure_consensus(responses)
             for measure in consensus:
-                data.append(self.measure_consensus(measure['payload']))
-            self.result_success(data)
-        
-        self.bridges = None #clearing bridge connections
+                measure['payload'] = self.measure_consensus(measure['payload'])
+            self.result_success(consensus)
 
     def measure_consensus(self, values):
         for item in values:
             strData = type(item) is str
             if strData:
                 break
-        
         if strData:
             strings = [
                 {
@@ -104,7 +101,7 @@ class Adapter:
             for value in strings:
                 if value['count'] > count:
                     string = value['value']
-                    count = value[count]
+                    count = value['count']
             measurement = {
                 'value': string,
                 'agreed': count/len(values),
@@ -119,6 +116,10 @@ class Adapter:
             }
         return measurement
 
+    def burn_bridge(self):
+        for bridge in self.bridges:
+            bridge.disconnect()
+
     def result_success(self, data):
         self.result = {
             'jobRunID': self.id,
@@ -132,6 +133,6 @@ class Adapter:
         self.result = {
             'jobRunID': self.id,
             'status': 'errored',
-            'error': f'There was an error: {error}',
+            'error': error,
             'statusCode': 500,
         }

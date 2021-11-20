@@ -1,16 +1,25 @@
-import paho.mqtt.subscribe as subscribe
-import paho.mqtt.publish as publish
+import paho.mqtt.client as mqtt
 from typing import NamedTuple
 
 class Bridge(object):
 
-    messages = []
-    result = 'failed'
-    def callback(self, client, userdata, message): #pass 'self' into userdata?
+    def on_message(self, client, userdata, message): #pass 'self' into userdata?
+        print('message: ' + message)
         for topic in self.messages:
             if topic['topic'] == message.topic:
                 topic['payload'] = message.payload
                 break
+
+    def on_publish(self, client, userdata, mid):
+        print('published: ' + str(mid))
+        if mid == self.response['mid']:
+            self.response['pending'] = False
+
+
+    def on_subscribe(self, client, userdata, mid, granted_qos):
+        print('subscribed: ' + str(mid) + ' @qos: ' + str(granted_qos))
+        if mid == self.response['mid']:
+            self.response['pending'] = False
 
     def __init__(
         self,
@@ -18,34 +27,22 @@ class Bridge(object):
         port,
         user = None,
         key = None,
-        ca_certs = None,
-        cert_file = None,
-        key_file = None,
-        tls_version = None,
-        ciphers = None
     ):
-        self.host = host
-        self.port = port
+        self.messages = []
+        self.result = 'failed'
+        self.reset_callback_status()
         
-        #self.will = Pub('',0,'',False) #not implemented
+        self.client = mqtt.Client()
 
-        self.auth = None
         if user and key:
-            self.auth = {
-                'username': user,
-                'password': key
-            }
+            self.client.username_pw_set(user, key)
+        
+        self.client.on_message = self.on_message
+        self.client.on_publish = self.on_publish
+        self.client.on_subscribe = self.on_subscribe
 
-        self.tls = None
-        if ca_certs: #only ca_certs needed for tls
-            self.tls = {
-                'ca_certs': ca_certs,
-                'certfile': cert_file,
-                'keyfile': key_file,
-                'tls_version': tls_version,
-                'ciphers': ciphers
-            }
-
+        self.client.connect(host, port)
+        self.client.loop_start()
         
     def subscribe(self, data):
         for topic in data['subscribe']['topics']:
@@ -53,30 +50,37 @@ class Bridge(object):
                 'topic': topic,
                 'payload': ''
             })
-        
-        subscribe.callback(
-            self.callback, 
-            data['subscribe']['topics'], 
-            data['subscribe']['qos'], 
-            hostname = self.host,
-            port = self.port,
-            auth = self.auth,
-            tls = self.tls
-        )
-
+            response = self.client.subscribe(
+                topic,
+                data['subscribe']['qos']
+            )
+            self.response['mid'] = response[1]
+            while(self.response['pending']):
+                pass
+            self.reset_callback_status()
         self.result = 'subscribed'
 
     def publish(self, data):
-        
         for topic in data['publish']:
             self.messages.append(topic)
-        
-        publish.multiple(
-            self.messages,
-            hostname=self.host,
-            port=self.port,
-            auth=self.auth,
-            tls=self.tls
-        )
-        
+            response = self.client.publish(
+                        topic['topic'],
+                        topic['payload'],
+                        topic['qos'],
+                        topic['retain']
+                    )
+            self.response['mid'] = response[1]
+            while(self.response['pending']):
+                pass
+            self.reset_callback_status()
         self.result = 'published'
+
+    def reset_callback_status(self):
+        self.response = {
+            'pending': True,
+            'mid': None
+        }
+
+    def disconnect(self):
+        self.client.loop_stop()
+        self.client.disconnect()
