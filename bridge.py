@@ -1,4 +1,5 @@
 import paho.mqtt.client as mqtt
+import time
 
 class Bridge(object):
     def on_connect(self, client, userdata, flags, rc):
@@ -11,13 +12,14 @@ class Bridge(object):
         for topic in self.messages:
             if topic['topic'] == message.topic:
                 received = str(message.payload, 'UTF-8')
-                if received.isnumeric():
-                    if received.find('.') > 0:
-                        topic['payload'] = float(received)
-                    else:
-                        topic['payload'] = int(received)
-                else:
-                    topic['payload'] = str(received)
+                try:
+                    received = int(received)
+                except ValueError:
+                    try:
+                        received = float(received)
+                    except ValueError:
+                        pass
+                topic['payload'] = received
                 break
 
     def on_publish(self, client, userdata, mid):
@@ -99,11 +101,15 @@ class Bridge(object):
             'mid': mid,
             'error': None
         }
+        wait_start = time.time()
         while(self.response['pending']):
-            #TODO: Error handling on failing broker responses
-            if self.response['error'] is not None:
+            if time.time() - wait_start >= 3:
+                #TODO: Add timeout on waiting with warning message
+                print('timeout on callback response')
                 break
-            pass
+            if self.response['error'] is not None:
+                #TODO: Error handling on failing broker responses
+                break
         self.response = {
             'pending': True,
             'mid': None,

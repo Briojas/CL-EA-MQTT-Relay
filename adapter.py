@@ -29,8 +29,8 @@ class Adapter:
     error = False
 
     def __init__(self, input):
-        self.id = input.get('id', 'NONE')
-        self.request_data = [input.get('data')]
+        self.id = input.get('id', '1')
+        self.request_data = [input.get('data')] #needs to be list for getattr()(*inputs)
         
         self.validate_request_data()
         self.id_action()
@@ -39,7 +39,7 @@ class Adapter:
         self.burn_bridge()
 
     def validate_request_data(self):
-        if self.request_data is None or self.request_data == {}:
+        if self.request_data[0] is None or self.request_data == {}:
             self.result_error('No data provided')
 
     def id_action(self):
@@ -66,6 +66,7 @@ class Adapter:
         if not self.error:
             for bridge in self.bridges:
                 responses.append(bridge.result)
+                print(bridge.messages)
                 for topic in bridge.messages:
                     create_measure = True
                     for measure in consensus:
@@ -87,12 +88,20 @@ class Adapter:
 
     def measure_consensus(self, values):
         str_type = False
+        none_items = []
         for item in values:
             if type(item) is str:
                 str_type = True
             elif item is None:
-                values.pop(values.index(item))
-        if str_type:
+                none_items.append(values.index(item))
+        none_items.reverse()
+        for item in none_items:
+            values.pop(item)
+        if len(values) == 0:
+            measurement = {
+                'reporting': 0
+            }
+        elif str_type:
             strings = [
                 {
                     'value': values[0],
@@ -115,8 +124,11 @@ class Adapter:
                 'reporting': len(values)/len(self.bridges)
             }
         else:
+            mean = statistics.mean(values)
+            if type(values[0]) is int:
+                mean = int(round(mean))
             measurement = {
-                'value': statistics.mean(values),
+                'value': mean,
                 'stdev': statistics.stdev(values),
                 'variance': statistics.variance(values),
                 'reporting': len(values)/len(self.bridges)
