@@ -16,7 +16,7 @@ def adapter_setup(test_data):
     a = adapter.Adapter(test_data)
     return a.result
 
-    #pub/sub string data
+#pub/sub string data
 @pytest.mark.parametrize('test_data', [
     {'id': job_run_id, 'data': {'publish': [
         {'topic': topics[0], 'qos': 0, 'payload': payload_string, 'retain': True}
@@ -62,7 +62,7 @@ def test_pub_sub_floats(test_data):
         assert topic['payload']['reporting'] >= 0.5
     assert type(result['result']) is dict
 
-#pub/sub float data
+#pub/sub int data
 @pytest.mark.parametrize('test_data', [
     {'id': job_run_id, 'data': {'publish': [
         {'topic': topics[0], 'qos': 0, 'payload': payload_int, 'retain': True}
