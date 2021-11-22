@@ -6,15 +6,9 @@ from bridge import Bridge
 class Adapter:
     bridges = [
         Bridge(
-            'cl-ea-mqtt-test.cloud.shiftr.io', 
+            'broker.emqx.io', 
             1883,
-            'cl-ea-mqtt-test',
-            'roW522qXIMaMgKc2'
         ),
-        # Bridge(
-        #     'broker.mqttdashboard.com', 
-        #     8000
-        # ),
         Bridge(
             'test.mosquitto.org', 
             1883
