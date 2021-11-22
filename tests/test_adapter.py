@@ -19,10 +19,6 @@ def adapter_setup(test_data):
 #pub/sub string data
 @pytest.mark.parametrize('test_data', [
     {'id': job_run_id, 'data': {'publish': [
-        {'topic': topics[0], 'qos': 0, 'payload': payload_string, 'retain': True}
-    ]}},
-    {'id': job_run_id, 'data': {'subscribe':{'topics':[topics[0]], 'qos':0}}},
-    {'id': job_run_id, 'data': {'publish': [
         {'topic': topics[0], 'qos': 0, 'payload': payload_string, 'retain': True},
         {'topic': topics[1], 'qos': 0, 'payload': payload_string, 'retain': True},
         {'topic': topics[2], 'qos': 0, 'payload': payload_string, 'retain': True}
@@ -42,10 +38,6 @@ def test_pub_sub_strings(test_data):
 #pub/sub float data
 @pytest.mark.parametrize('test_data', [
     {'id': job_run_id, 'data': {'publish': [
-        {'topic': topics[0], 'qos': 0, 'payload': payload_float, 'retain': True}
-    ]}},
-    {'id': job_run_id, 'data': {'subscribe':{'topics':[topics[0]], 'qos':0}}},
-    {'id': job_run_id, 'data': {'publish': [
         {'topic': topics[0], 'qos': 0, 'payload': payload_float, 'retain': True},
         {'topic': topics[1], 'qos': 0, 'payload': payload_float, 'retain': True},
         {'topic': topics[2], 'qos': 0, 'payload': payload_float, 'retain': True}
@@ -64,10 +56,6 @@ def test_pub_sub_floats(test_data):
 
 #pub/sub int data
 @pytest.mark.parametrize('test_data', [
-    {'id': job_run_id, 'data': {'publish': [
-        {'topic': topics[0], 'qos': 0, 'payload': payload_int, 'retain': True}
-    ]}},
-    {'id': job_run_id, 'data': {'subscribe':{'topics':[topics[0]], 'qos':0}}},
     {'id': job_run_id, 'data': {'publish': [
         {'topic': topics[0], 'qos': 0, 'payload': payload_int, 'retain': True},
         {'topic': topics[1], 'qos': 0, 'payload': payload_int, 'retain': True},
