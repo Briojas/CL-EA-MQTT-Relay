@@ -28,10 +28,11 @@ def adapter_setup(test_data):
 def test_pub_sub_strings(test_data):
     result = adapter_setup(test_data)
     print(result)
+    
     assert result['statusCode'] == 200
     assert result['jobRunID'] == job_run_id
     for topic in result['data']:
-        assert topic['payload']['value'] == payload_string
+        assert type(topic['payload']['value']) is str
         assert topic['payload']['reporting'] >= 0.5
     assert type(result['result']) is dict
 
