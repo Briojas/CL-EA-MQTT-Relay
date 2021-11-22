@@ -118,11 +118,8 @@ class Adapter:
                 'reporting': len(values)/len(self.bridges)
             }
         else:
-            mean = statistics.mean(values)
-            if type(values[0]) is int:
-                mean = int(round(mean))
             measurement = {
-                'value': mean,
+                'value': statistics.median(values),
                 'stdev': statistics.stdev(values),
                 'variance': statistics.variance(values),
                 'reporting': len(values)/len(self.bridges)
