@@ -130,8 +130,9 @@ class Adapter:
         return measurement
 
     def burn_bridge(self):
-        for bridge in self.bridges:
-            bridge.disconnect()
+        if not self.error:
+            for bridge in self.bridges:
+                bridge.disconnect()
 
     def result_success(self, data):
         self.result = {
