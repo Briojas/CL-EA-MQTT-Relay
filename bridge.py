@@ -54,7 +54,7 @@ class Bridge(object):
         self.messages = []
         self.result = 'failed'
         self.allowed_callback_attempts = 5
-        self.allowed_callback_timeout = 5
+        self.allowed_callback_timeout = 10
         self.hostname = host
         
         self.client = mqtt.Client()
