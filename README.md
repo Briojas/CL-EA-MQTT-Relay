@@ -15,7 +15,15 @@ pipenv install
 ```
 pipenv run pytest
 ```
-
+## Management
+For new packages:
+```
+pipenv install PYPI-package-name
+```
+Locking new packages:
+```
+pipenv lock -r > requirements.txt
+```
 ## Run with Docker
 
 Build the image

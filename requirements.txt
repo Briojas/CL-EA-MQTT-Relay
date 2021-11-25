@@ -5,15 +5,16 @@
 #    pipenv lock --requirements
 #
 
--i https://pypi.org/simple
-click==8.0.3; python_version >= '3.6'
-colorama==0.4.4; platform_system == 'Windows'
-flask==1.1.1
-importlib-metadata==4.8.2; python_version < '3.8'
-itsdangerous==2.0.1; python_version >= '3.6'
-jinja2==3.0.3; python_version >= '3.6'
-markupsafe==2.0.1; python_version >= '3.6'
-paho-mqtt==1.6.1
-typing-extensions==3.10.0.2; python_version < '3.8'
-werkzeug==2.0.2; python_version >= '3.6'
-zipp==3.6.0; python_version >= '3.6'
+-i https://pypi.org/simple
+click==8.0.3; python_version >= '3.6'
+colorama==0.4.4; platform_system == 'Windows'
+flask==1.1.1
+importlib-metadata==4.8.2; python_version < '3.8'
+itsdangerous==2.0.1; python_version >= '3.6'
+jinja2==3.0.3; python_version >= '3.6'
+markupsafe==2.0.1; python_version >= '3.6'
+paho-mqtt==1.6.1
+python-dotenv==0.19.2
+typing-extensions==4.0.0; python_version < '3.8'
+werkzeug==2.0.2; python_version >= '3.6'
+zipp==3.6.0; python_version >= '3.6'

@@ -3,6 +3,7 @@ import time
 
 class Bridge(object):
     def on_connect(self, client, userdata, flags, rc):
+        #print('on_connect ' + str(rc))
         if rc == self.callback['id']:
             self.callback['pending'] = False
         else:
@@ -10,20 +11,25 @@ class Bridge(object):
             self.callback['source'] = 'on_connect'
 
     def on_publish(self, client, userdata, mid):
+        #print('on_pub ' + str(mid))
         if mid == self.callback['id']:
             self.callback['pending'] = False
+            self.result = 'published'
         else:
             self.callback['error'] = mid
             self.callback['source'] = 'on_publish'
 
     def on_subscribe(self, client, userdata, mid, granted_qos):
+        #print('on_sub ' + str(mid))
         if mid == self.callback['id']:
             self.callback['pending'] = False
+            self.result = 'subscribed'
         else:
             self.callback['error'] = mid
             self.callback['source'] = 'on_subscribe'
 
     def on_disconnect(self, client, userdata, rc):
+        #print('on_disconnect ' + str(rc))
         if rc == self.callback['id']:
             self.callback['pending'] = False
         else:
@@ -60,6 +66,7 @@ class Bridge(object):
         self.client = mqtt.Client()
 
         if user and key:
+            self.client.tls_set(tls_version=mqtt.ssl.PROTOCOL_TLS)
             self.client.username_pw_set(user, key)
         
         self.client.on_connect = self.on_connect
@@ -89,7 +96,6 @@ class Bridge(object):
                 topic,
                 data['subscribe']['qos']
             )
-        self.result = 'subscribed'
 
     def publish(self, data):
         if self.disconnected:
@@ -103,7 +109,6 @@ class Bridge(object):
                 topic['qos'],
                 topic['retain']
             )
-        self.result = 'published'
 
     def disconnect(self):
         self.await_broker_callback(self.client.disconnect)

@@ -1,9 +1,10 @@
-import statistics
-
-from attr import validate
 from bridge import Bridge
+import statistics
+import os
+from dotenv import load_dotenv
 
 class Adapter:
+    load_dotenv()
     bridges = [
         Bridge(
             'broker.emqx.io', 
@@ -14,8 +15,14 @@ class Adapter:
             1883
         ),
         Bridge(
-            'broker.hivemq.com', 
+            str(os.environ.get('PUBLIC_BROKER_HIVEMQ')), #'broker.hivemq.com'
             1883
+        ),
+        Bridge(
+            str(os.environ.get('PRIVATE_BROKER_HIVEMQ')), 
+            8883,
+            str(os.environ.get('HIVEMQ_CLIENT_USER')),
+            str(os.environ.get('HIVEMQ_CLIENT_KEY'))
         )
     ]
     action_list = ['subscribe', 'publish']
