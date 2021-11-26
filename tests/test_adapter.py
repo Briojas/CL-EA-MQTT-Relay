@@ -4,9 +4,9 @@ import adapter
 
 job_run_id = '1'
 topics = [
-    '/cl-ea-mqtt-client/test1',
-    '/cl-ea-mqtt-client/test2',
-    '/cl-ea-mqtt-client/test3',
+    '/smart-contract-client/test1',
+    '/smart-contract-client/test2',
+    '/smart-contract-client/test3',
 ]
 payload_string = 'test_message'
 payload_float = 11.11

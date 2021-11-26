@@ -5,8 +5,10 @@ from dotenv import load_dotenv
 
 class Adapter:
     load_dotenv()
-    public_broker = str(os.environ['PUBLIC_BROKER_HIVEMQ'])
-    print(public_broker)
+    public_broker_hivemq = str(os.environ['PUBLIC_BROKER_HIVEMQ'])
+    private_broker_hivemq = str(os.environ['PRIVATE_BROKER_HIVEMQ'])
+    hivemq_client_user = str(os.environ['HIVEMQ_CLIENT_USER'])
+    hivemq_client_key = str(os.environ['HIVEMQ_CLIENT_KEY'])
     bridges = [
         Bridge(
             'broker.emqx.io', 
@@ -17,15 +19,15 @@ class Adapter:
             1883
         ),
         Bridge(
-            public_broker, #'broker.hivemq.com'
+            public_broker_hivemq, #'broker.hivemq.com'
             1883
         ),
-        # Bridge(
-        #     str(os.environ.get('PRIVATE_BROKER_HIVEMQ')), 
-        #     8883,
-        #     str(os.environ.get('HIVEMQ_CLIENT_USER')),
-        #     str(os.environ.get('HIVEMQ_CLIENT_KEY'))
-        # )
+        Bridge(
+            private_broker_hivemq, 
+            8883,
+            hivemq_client_user,
+            hivemq_client_key
+        )
     ]
     action_list = ['subscribe', 'publish']
     action = ''
