@@ -129,16 +129,23 @@ class Adapter:
                 'reporting': len(values)/len(self.bridges)
             }
         else:
-            mode = statistics.mode(values)
-            median = statistics.median(values)
-            if median == mode:
-                output = mode
+            if len(values) == 1:
+                value = values[0]
+                stdev = 0
+                variance = 0
             else:
-                output = median
+                mode = statistics.mode(values)
+                median = statistics.median(values)
+                if median == mode:
+                    value = mode
+                else:
+                    value = median
+                stdev = statistics.stdev(values)
+                variance = statistics.variance(values)
             measurement = {
-                'value': output,
-                'stdev': statistics.stdev(values),
-                'variance': statistics.variance(values),
+                'value': value,
+                'stdev': stdev,
+                'variance': variance,
                 'reporting': len(values)/len(self.bridges)
             }
         return measurement
