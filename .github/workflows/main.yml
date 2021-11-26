@@ -29,5 +29,8 @@ jobs:
     - name: Test with pytest
       env:
         PUBLIC_BROKER_HIVEMQ: ${{secrets.PUBLIC_BROKER_HIVEMQ}}
+        PRIVATE_BROKER_HIVEMQ: ${{secrets.PRIVATE_BROKER_HIVEMQ}}
+        HIVEMQ_CLIENT_USER: ${{secrets.HIVEMQ_CLIENT_USER}}
+        HIVEMQ_CLIENT_KEY: ${{secrets.HIVEMQ_CLIENT_KEY}}
       run: |
         pytest 
