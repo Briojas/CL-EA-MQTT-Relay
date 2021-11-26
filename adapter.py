@@ -120,13 +120,19 @@ class Adapter:
                     string = value['value']
                     count = value['count']
             measurement = {
-                'value': string,
+                'value': str(string),
                 'agreed': count/len(values),
                 'reporting': len(values)/len(self.bridges)
             }
         else:
+            mode = statistics.mode(values)
+            median = statistics.median(values)
+            if median == mode:
+                output = mode
+            else:
+                output = median
             measurement = {
-                'value': statistics.median(values),
+                'value': output,
                 'stdev': statistics.stdev(values),
                 'variance': statistics.variance(values),
                 'reporting': len(values)/len(self.bridges)
