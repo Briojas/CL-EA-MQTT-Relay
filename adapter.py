@@ -15,10 +15,6 @@ class Adapter:
             1883,
         ),
         Bridge(
-            'test.mosquitto.org', 
-            1883
-        ),
-        Bridge(
             public_broker_hivemq, #'broker.hivemq.com'
             1883
         ),
@@ -34,7 +30,7 @@ class Adapter:
     error = False
 
     def __init__(self, input):
-        self.id = input.get('id', '1')
+        self.id = input.get('id', 1)
         self.request_data = [input.get('data')] #needs to be list for getattr()(*inputs)
         
         self.validate_request_data()
@@ -44,26 +40,23 @@ class Adapter:
         self.burn_bridge()
 
     def validate_request_data(self):
-        if self.request_data[0] is None or self.request_data == {}:
+        if self.request_data[0] is None or self.request_data[0] == {}:
             self.result_error('No data provided')
 
     def id_action(self):
         if not self.error:
-            for action in self.action_list:
-                if action in self.request_data[0]:
-                    self.action = action
-                    return
+            if 'action' in self.request_data[0].keys() and self.request_data[0]['action'] in self.action_list:
+                self.action = self.request_data[0]['action']
+                return
             self.result_error('Invalid action provided')
 
     def build_bridge(self):
         if not self.error:
             for bridge in self.bridges:
-                for action in self.action_list:
-                    if self.action == action:
-                        try:
-                            getattr(bridge, action)(*self.request_data)
-                        except Exception as e:
-                            self.result_error(e)
+                try:
+                    getattr(bridge, self.action)(*self.request_data)
+                except Exception as e:
+                    self.result_error(e)
 
     def build_consensus(self):
         consensus = []

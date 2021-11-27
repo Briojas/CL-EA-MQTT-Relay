@@ -2,12 +2,8 @@ from numbers import Number
 import pytest
 import adapter
 
-job_run_id = '1'
-topics = [
-    '/smart-contract-client/test1',
-    '/smart-contract-client/test2',
-    '/smart-contract-client/test3',
-]
+job_run_id = 1
+topic = '/smart-contract-client/test'
 payload_string = 'test_message'
 payload_float = 11.11
 payload_int = 7
@@ -18,12 +14,18 @@ def adapter_setup(test_data):
 
 #pub/sub string data
 @pytest.mark.parametrize('test_data', [
-    {'id': job_run_id, 'data': {'publish': [
-        {'topic': topics[0], 'qos': 0, 'payload': payload_string, 'retain': True},
-        {'topic': topics[1], 'qos': 0, 'payload': payload_string, 'retain': True},
-        {'topic': topics[2], 'qos': 0, 'payload': payload_string, 'retain': True}
-    ]}},
-    {'id': job_run_id, 'data': {'subscribe':{'topics': topics, 'qos':0}}},
+    {'id': job_run_id, 'data': {
+        'action': 'publish',
+        'topic': topic, 
+        'qos': 0, 
+        'payload': payload_string, 
+        'retain': True
+    }},
+    {'id': job_run_id, 'data': {
+        'action':'subscribe',
+        'topic': topic, 
+        'qos':0
+    }}
 ])
 def test_pub_sub_strings(test_data):
     result = adapter_setup(test_data)
@@ -38,12 +40,18 @@ def test_pub_sub_strings(test_data):
 
 #pub/sub float data
 @pytest.mark.parametrize('test_data', [
-    {'id': job_run_id, 'data': {'publish': [
-        {'topic': topics[0], 'qos': 0, 'payload': payload_float, 'retain': True},
-        {'topic': topics[1], 'qos': 0, 'payload': payload_float, 'retain': True},
-        {'topic': topics[2], 'qos': 0, 'payload': payload_float, 'retain': True}
-    ]}},
-    {'id': job_run_id, 'data': {'subscribe':{'topics': topics, 'qos':0}}},
+    {'id': job_run_id, 'data': {
+        'action': 'publish',
+        'topic': topic, 
+        'qos': 0, 
+        'payload': payload_float, 
+        'retain': True
+    }},
+    {'id': job_run_id, 'data': {
+        'action':'subscribe',
+        'topic': topic, 
+        'qos':0
+    }}
 ])
 def test_pub_sub_floats(test_data):
     result = adapter_setup(test_data)
@@ -57,12 +65,18 @@ def test_pub_sub_floats(test_data):
 
 #pub/sub int data
 @pytest.mark.parametrize('test_data', [
-    {'id': job_run_id, 'data': {'publish': [
-        {'topic': topics[0], 'qos': 0, 'payload': payload_int, 'retain': True},
-        {'topic': topics[1], 'qos': 0, 'payload': payload_int, 'retain': True},
-        {'topic': topics[2], 'qos': 0, 'payload': payload_int, 'retain': True}
-    ]}},
-    {'id': job_run_id, 'data': {'subscribe':{'topics': topics, 'qos':0}}},
+    {'id': job_run_id, 'data': {
+        'action': 'publish',
+        'topic': topic, 
+        'qos': 0, 
+        'payload': payload_int, 
+        'retain': True
+    }},
+    {'id': job_run_id, 'data': {
+        'action':'subscribe',
+        'topic': topic, 
+        'qos':0
+    }}
 ])
 def test_pub_sub_ints(test_data):
     result = adapter_setup(test_data)

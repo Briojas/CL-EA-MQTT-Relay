@@ -60,7 +60,7 @@ class Bridge(object):
         self.messages = []
         self.result = 'failed'
         self.allowed_callback_attempts = 5
-        self.allowed_callback_timeout = 10
+        self.allowed_callback_timeout = 5
         self.hostname = host
         
         self.client = mqtt.Client()
@@ -86,29 +86,30 @@ class Bridge(object):
     def subscribe(self, data):
         if self.disconnected:
             self.reconnect()
-        for topic in data['subscribe']['topics']:
-            self.messages.append({
-                'topic': topic,
-                'payload': None
-            })
-            self.await_broker_callback(
-                self.client.subscribe,
-                topic,
-                data['subscribe']['qos']
-            )
+        self.messages.append({
+            'topic': data['topic'],
+            'payload': None
+        })
+        self.await_broker_callback(
+            self.client.subscribe,
+            data['topic'],
+            data['qos']
+        )
 
     def publish(self, data):
         if self.disconnected:
             self.reconnect()
-        for topic in data['publish']:
-            self.messages.append(topic)
-            self.await_broker_callback(
-                self.client.publish,
-                topic['topic'],
-                topic['payload'],
-                topic['qos'],
-                topic['retain']
-            )
+        self.messages.append({
+            'topic': data['topic'],
+            'payload': data['payload']
+        })
+        self.await_broker_callback(
+            self.client.publish,
+            data['topic'],
+            data['payload'],
+            data['qos'],
+            data['retain']
+        )
 
     def disconnect(self):
         self.await_broker_callback(self.client.disconnect)
