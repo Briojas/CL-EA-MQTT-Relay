@@ -19,7 +19,7 @@ def adapter_setup(test_data):
         'topic': topic, 
         'qos': 0, 
         'payload': payload_string, 
-        'retain': True
+        'retain': 1
     }},
     {'id': job_run_id, 'data': {
         'action':'subscribe',
@@ -45,7 +45,7 @@ def test_pub_sub_strings(test_data):
         'topic': topic, 
         'qos': 0, 
         'payload': payload_float, 
-        'retain': True
+        'retain': 1
     }},
     {'id': job_run_id, 'data': {
         'action':'subscribe',
@@ -70,7 +70,7 @@ def test_pub_sub_floats(test_data):
         'topic': topic, 
         'qos': 0, 
         'payload': payload_int, 
-        'retain': True
+        'retain': 1
     }},
     {'id': job_run_id, 'data': {
         'action':'subscribe',
