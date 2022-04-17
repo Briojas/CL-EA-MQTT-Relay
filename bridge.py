@@ -102,12 +102,16 @@ class Bridge(object):
             'topic': data['topic'],
             'payload': data['payload']
         })
+        if data['retain'] == 1:
+            retain = True
+        else:
+            retain = False
         self.await_broker_callback(
             self.client.publish,
             data['topic'],
             data['payload'],
             data['qos'],
-            data['retain']
+            retain
         )
 
     def disconnect(self):
