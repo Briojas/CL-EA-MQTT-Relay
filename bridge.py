@@ -29,7 +29,6 @@ class Bridge(object):
             self.callback['source'] = 'on_subscribe'
 
     def on_disconnect(self, client, userdata, rc):
-        #print('on_disconnect ' + str(rc))
         if rc == self.callback['id']:
             self.callback['pending'] = False
         else:

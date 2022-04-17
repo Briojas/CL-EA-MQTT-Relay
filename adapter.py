@@ -37,7 +37,7 @@ class Adapter:
         self.id_action()
         self.build_bridge()
         self.build_consensus()
-        self.burn_bridge()
+        self.burn_bridge_data() #When removed, bridges should retain connection
 
     def validate_request_data(self):
         if self.request_data[0] is None or self.request_data[0] == {}:
@@ -143,10 +143,11 @@ class Adapter:
             }
         return measurement
 
-    def burn_bridge(self):
+    def burn_bridge_data(self):
         if not self.error:
             for bridge in self.bridges:
-                bridge.disconnect()
+                bridge.messages = []
+                #bridge.disconnect() #uncomment for creating a new bridge instance each data request
 
     def result_success(self, data):
         self.result = {
