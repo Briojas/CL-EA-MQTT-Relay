@@ -23,6 +23,7 @@ This template shows basic usecases of an external adapter connecting a Smart Con
   
 ## Baked-in Features
 | action | topic | qos | payload | retain |
+| ----------- | ----------- | ----------- | ----------- | ----------- |
 | publish | address in Broker | quality of service level | data | storage on Broker |
 | subscribe | address of data in Broker | quality of service level | ignored | ignored |
 | ipfs | ignored | ignored | ipfs hash | ignored |
@@ -44,9 +45,3 @@ This template shows basic usecases of an external adapter connecting a Smart Con
   ```
   pipenv lock -r > requirements.txt
   ```
-
-| Syntax | Description |
-| ----------- | ----------- |
-| Header | Title |
-| Paragraph | Text |
-| Paragraph | Text |
