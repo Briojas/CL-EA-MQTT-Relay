@@ -18,17 +18,26 @@ This template shows basic usecases of an external adapter connecting a Smart Con
 4. Bridge setup
     - Name: cl-ea-mqtt-client
     - URL: http://192.168.?.??:8080
+      - for local deployments
 5. Job setup
     - See oracleJobs directory for examples
   
-## Baked-in Features
+## Baked-in Actions
+### Publish
+Posts a singular payload to the Brokers defined on the topic specified with the quality of service level given. 
+### Subscribe
+Gets a singular payload from the Brokers defined on the topic specified with the quality of service level given
+### Script
+Pulls a script from IPFS at the hash given for advanced, custom processing
+#### Inputs table:
 | action | topic | qos | payload | retain |
 | ----------- | ----------- | ----------- | ----------- | ----------- |
-| **publish** | address in Broker | quality of service level | data | storage on Broker |
-| **subscribe** | address in Broker | quality of service level | ignored | ignored |
-| **ipfs** | ignored | ignored | ipfs hash | ignored |
+| **PUBLISH**[^1] | address in Broker | quality of service level | data | storage on Broker |
+| **SUBSCRIBE**[^1] | address in Broker | quality of service level | ignored | ignored |
+| **SCRIPT** | ignored | ignored | ipfs hash[^2] | ignored |
 
-[HiveMQ: MQTT Essentials](https://www.hivemq.com/mqtt-essentials/)
+[^1]: [HiveMQ: MQTT Essentials](https://www.hivemq.com/mqtt-essentials/)
+[^2]: [IPFS URL with hash](https://docs.ipfs.io/how-to/address-ipfs-on-web/)
 
 ## Development 
 ### Test

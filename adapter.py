@@ -25,7 +25,7 @@ class Adapter:
             hivemq_client_key
         )
     ]
-    action_list = ['subscribe', 'publish']
+    action_list = ['SUBSCRIBE', 'PUBLISH', 'SCRIPT']
     action = ''
     error = False
 
