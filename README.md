@@ -23,9 +23,10 @@ This template shows basic usecases of an external adapter connecting a Smart Con
   
 ## Baked-in Features
 | action | topic | qos | payload | retain |
-| **publish** | address in Broker | quality of service level | data | storage on Broker |
-| **subscribe** | address of data in Broker | quality of service level | ignored | ignored |
-| **ipfs** | ignored | ignored | ipfs hash | ignored |
+| publish | address in Broker | quality of service level | data | storage on Broker |
+| subscribe | address of data in Broker | quality of service level | ignored | ignored |
+| ipfs | ignored | ignored | ipfs hash | ignored |
+
 [HiveMQ: MQTT Essentials](https://www.hivemq.com/mqtt-essentials/)
 
 ## Development 
