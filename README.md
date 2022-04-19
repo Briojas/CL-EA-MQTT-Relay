@@ -49,3 +49,4 @@ This template shows basic usecases of an external adapter connecting a Smart Con
 | ----------- | ----------- |
 | Header | Title |
 | Paragraph | Text |
+| Paragraph | Text |
