@@ -1,4 +1,3 @@
-from numbers import Number
 import pytest
 import adapter
 
@@ -88,7 +87,7 @@ def test_pub_sub_ints(test_data):
         assert topic['payload']['reporting'] >= 0.5
     assert type(result['result']) is dict
 
-
+#error data
 @pytest.mark.parametrize('test_data', [
     {'id': job_run_id, 'data': {}},
     {'id': job_run_id, 'data': {'unknown_action': [{'fake_data': 'does_not_exist'}]}},

@@ -1,0 +1,36 @@
+{
+    "bridges":[
+        {
+            "name": "template",
+            "host": null,
+            "port": null,
+            "user": null,
+            "key": null,
+            "env": null
+        },
+        {
+            "name": "Public_Test_Broker_A",
+            "host": "broker.emqx.io",
+            "port": 1883,
+            "user": null,
+            "key": null,
+            "env": false
+        },
+        {
+            "name": "Public_Test_Broker_B",
+            "host": "broker.hivemq.com",
+            "port": 1883,
+            "user": null,
+            "key": null,
+            "env": false
+        },
+        {
+            "name": "Private_Test_Broker",
+            "host": "PRIVATE_BROKER_HIVEMQ",
+            "port": 8883,
+            "user": "HIVEMQ_CLIENT_USER",
+            "key": "HIVEMQ_CLIENT_KEY",
+            "env": true
+        }
+    ]
+}

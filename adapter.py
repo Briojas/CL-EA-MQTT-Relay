@@ -1,31 +1,11 @@
-from bridge import Bridge
-import statistics
-import os
 from dotenv import load_dotenv
+#from sqlalchemy import null, true
+from bridge import Bridge
+import os, json, statistics
 
 class Adapter:
-    load_dotenv()
-    public_broker_hivemq = str(os.environ['PUBLIC_BROKER_HIVEMQ'])
-    private_broker_hivemq = str(os.environ['PRIVATE_BROKER_HIVEMQ'])
-    hivemq_client_user = str(os.environ['HIVEMQ_CLIENT_USER'])
-    hivemq_client_key = str(os.environ['HIVEMQ_CLIENT_KEY'])
-    bridges = [
-        Bridge(
-            'broker.emqx.io', 
-            1883,
-        ),
-        Bridge(
-            public_broker_hivemq, #'broker.hivemq.com'
-            1883
-        ),
-        Bridge(
-            private_broker_hivemq, 
-            8883,
-            hivemq_client_user,
-            hivemq_client_key
-        )
-    ]
-    action_list = ['SUBSCRIBE', 'PUBLISH', 'SCRIPT']
+    bridges = []
+    action_list = ['subscribe', 'publish', 'script']
     action = ''
     error = False
 
@@ -35,9 +15,10 @@ class Adapter:
         
         self.validate_request_data()
         self.id_action()
-        self.build_bridge()
+        self.build_bridges()
+        self.execute_bridges()
         self.build_consensus()
-        self.burn_bridge_data() #When removed, bridges should retain connection
+        self.burn_bridge_data()
 
     def validate_request_data(self):
         if self.request_data[0] is None or self.request_data[0] == {}:
@@ -50,7 +31,28 @@ class Adapter:
                 return
             self.result_error('Invalid action provided')
 
-    def build_bridge(self):
+    def build_bridges(self):
+        load_dotenv()
+        with open(os.getcwd() + '\\bridges.json', 'r') as readingFile:
+            bridges = json.load(readingFile)
+        for bridge in bridges['bridges']:
+            if bridge['host'] is not None:
+                if bridge['env']:
+                    host = str(os.environ[bridge['host']])    
+                    user = str(os.environ[bridge['user']])
+                    key = str(os.environ[bridge['key']])
+                else:
+                    host = bridge['host']
+                    user = bridge['user']
+                    key = bridge['key']
+                self.bridges.append(Bridge(
+                    host, 
+                    bridge['port'],
+                    user,
+                    key
+                ))        
+
+    def execute_bridges(self):
         if not self.error:
             for bridge in self.bridges:
                 try:
