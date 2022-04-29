@@ -13,16 +13,22 @@ This template shows basic usecases of an external adapter connecting a Smart Con
 3. Populate 'bridges.json' file
   name
   : Label describing this broker bridge
+
   host
   : Domain name or IP address of the broker
+
   port
   : Unsecure (e.g. 1883) or secure (e.g. 8883) broker port number
+
   user
   : Username for logging into private brokers
+
   key
   : Password for logging into private broker
+
   env
   : Boolean flag for if the 'host', 'user', and 'key' values are .env file variable names
+  
 4. Create '.env' file with any private broker data 
   - Be sure the variable names created match those listed in the 'bridges.json' file:
     ```
