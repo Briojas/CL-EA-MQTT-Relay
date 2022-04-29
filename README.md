@@ -5,7 +5,7 @@
 This template shows basic usecases of an external adapter connecting a Smart Contract to an MQTT Broker. It can be ran locally, or in Docker.
 
 ## External Adapter Setup
-1. Download and unzip the repo.
+1. Download and unzip the repo
 2. Install dependencies:
   ```
   pipenv install
@@ -45,9 +45,9 @@ env
   docker build . -t cl-ea-mqtt-client
   docker run -it -p 8080:8080 cl-ea-mqtt-client
   ```
-6. [Bridge setup](https://docs.chain.link/docs/node-operators/)
+6. [Setup the Chainlink Node Bridge](https://docs.chain.link/docs/node-operators/)
 
-7. [Job setup](https://docs.chain.link/docs/jobs/)
+7. [Create the Node Job](https://docs.chain.link/docs/jobs/)
     - See [oracleJobs](https://github.com/Briojas/CL-EA-MQTT-Client/tree/master/oracleJobs) directory for TOML examples
   
 ## Baked-in Actions
