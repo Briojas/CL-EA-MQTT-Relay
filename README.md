@@ -29,6 +29,13 @@ key
 
 env
 : Flags if the 'host', 'user', and 'key' values are .env file variable names
+
+First Term
+: This is the definition of the first term.
+
+Second Term
+: This is one definition of the second term.
+: This is another definition of the second term.
   
 4. Create '.env' file with any private broker data 
   - Be sure the variable names created match those listed in the 'bridges.json' file:
