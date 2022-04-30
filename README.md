@@ -4,9 +4,6 @@
 
 This template shows basic usecases of a Chainlink external adapter connecting a smart contract to an MQTT broker. It can be ran locally or in Docker.
 
-Term
-: Test def.
-
 ## External Adapter Setup
 1. Download and unzip the repo
 2. Install dependencies:
@@ -15,11 +12,10 @@ Term
     ```
 3. Populate 'bridges.json' file:
  
-name
-: Label describing this broker bridge
-
-host
-: Domain name or IP address of the broker
+#### name
+Label describing this broker bridge
+#### host
+Domain name or IP address of the broker
 
 port
 : Unsecure (e.g. 1883) or secure (e.g. 8883) broker port number
@@ -84,6 +80,3 @@ Pulls a file from IPFS at the hash given for more advanced and custom processing
   ```
   pipenv lock -r > requirements.txt
   ```
-
-Term
-: Test def. 
