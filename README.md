@@ -11,22 +11,12 @@ This template shows basic usecases of a Chainlink external adapter connecting a 
     pipenv install
     ```
 3. Populate 'bridges.json' file:
- 
-  - **'name'**: Label describing this broker bridge
+    - **'name'**: Label describing this broker bridge
     - **'host'**: Domain name or IP address of the broker
-
-port
-: Unsecure (e.g. 1883) or secure (e.g. 8883) broker port number
-
-user
-: Username for logging into private brokers
-
-key
-: Password for logging into private broker
-
-env
-: Flags if the 'host', 'user', and 'key' values are .env file variable names
-  
+    - **'port'**: Unsecure (e.g. 1883) or secure (e.g. 8883) broker port number
+    - **'user'**: Username for logging into private brokers
+    - **'key'**: Password for logging into private broker
+    - **'env'**: Flags if the 'host', 'user', and 'key' values are .env file variable names
 4. Create '.env' file with any private broker data 
   - Be sure the variable names created match those listed in the 'bridges.json' file:
     ```
@@ -36,16 +26,14 @@ env
     .env File:
     PRIVATE_BROKER_DOMAIN = some.broker.domain
     ```
- 
 5. Build the docker image and run the container:
     ```
     docker build . -t cl-ea-mqtt-client
     docker run -it -p 8080:8080 cl-ea-mqtt-client
     ```
 6. [Setup the Chainlink Node Bridge](https://docs.chain.link/docs/node-operators/)
-
 7. [Create the Node Job](https://docs.chain.link/docs/jobs/)
-    - See [oracleJobs](https://github.com/Briojas/CL-EA-MQTT-Client/tree/master/oracleJobs) directory for TOML examples
+    - See [oracleJobs](https://github.com/Briojas/CL-EA-MQTT-Client/tree/master/oracleJobs) directory for TOML examples utilizing this bridge
   
 ## Baked-in Actions
 ### Publish

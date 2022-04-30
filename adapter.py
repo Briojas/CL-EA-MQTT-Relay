@@ -33,7 +33,7 @@ class Adapter:
 
     def build_bridges(self):
         load_dotenv()
-        with open(os.getcwd() + '\\bridges.json', 'r') as readingFile:
+        with open(os.getcwd() + '/bridges.json', 'r') as readingFile:
             bridges = json.load(readingFile)
         for bridge in bridges['bridges']:
             if bridge['host'] is not None:
