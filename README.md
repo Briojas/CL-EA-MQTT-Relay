@@ -1,23 +1,18 @@
-# Chainlink MQTT Relay External Adapter Template
+# Chainlink External Adapter as an MQTT Relay
 
 ![Lint and unit testing](https://github.com/Briojas/CL-EA-MQTT-Client/workflows/Lint%20and%20unit%20testing/badge.svg)
 
-This template shows basic usecases of an external adapter connecting a Smart Contract to an MQTT Broker. It can be ran locally, or in Docker.
+This template shows basic usecases of a Chainlink external adapter connecting a smart contract to an MQTT broker. It can be ran locally or in Docker.
 
-First Term
-
-: This is the definition of the first term.
-
-Second Term
-: This is one definition of the second term.
-: This is another definition of the second term.
+Term
+: Test def.
 
 ## External Adapter Setup
 1. Download and unzip the repo
 2. Install dependencies:
-  ```
-  pipenv install
-  ```
+    ```
+    pipenv install
+    ```
 3. Populate 'bridges.json' file:
  
 name
@@ -49,10 +44,10 @@ env
     ```
  
 5. Build the docker image and run the container:
-  ```
-  docker build . -t cl-ea-mqtt-client
-  docker run -it -p 8080:8080 cl-ea-mqtt-client
-  ```
+    ```
+    docker build . -t cl-ea-mqtt-client
+    docker run -it -p 8080:8080 cl-ea-mqtt-client
+    ```
 6. [Setup the Chainlink Node Bridge](https://docs.chain.link/docs/node-operators/)
 
 7. [Create the Node Job](https://docs.chain.link/docs/jobs/)
@@ -89,3 +84,6 @@ Pulls a file from IPFS at the hash given for more advanced and custom processing
   ```
   pipenv lock -r > requirements.txt
   ```
+
+Term
+: Test def. 
