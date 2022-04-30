@@ -5,6 +5,7 @@
 This template shows basic usecases of an external adapter connecting a Smart Contract to an MQTT Broker. It can be ran locally, or in Docker.
 
 First Term
+
 : This is the definition of the first term.
 
 Second Term
