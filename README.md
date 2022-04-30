@@ -12,10 +12,8 @@ This template shows basic usecases of a Chainlink external adapter connecting a 
     ```
 3. Populate 'bridges.json' file:
  
-#### name
-Label describing this broker bridge
-#### host
-Domain name or IP address of the broker
+**'name'**: Label describing this broker bridge
+  **'host'**: Domain name or IP address of the broker
 
 port
 : Unsecure (e.g. 1883) or secure (e.g. 8883) broker port number
