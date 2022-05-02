@@ -5,7 +5,7 @@ import os, json, statistics
 
 class Adapter:
     bridges = []
-    action_list = ['subscribe', 'publish', 'script']
+    action_list = [action for action in dir(Bridge) if action.startswith('__') is False]
     action = ''
     error = False
 
@@ -149,7 +149,6 @@ class Adapter:
         if not self.error:
             for bridge in self.bridges:
                 bridge.messages = []
-                #bridge.disconnect() #uncomment for creating a new bridge instance each data request
 
     def result_success(self, data):
         self.result = {

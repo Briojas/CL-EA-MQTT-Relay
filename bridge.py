@@ -2,7 +2,7 @@ import paho.mqtt.client as mqtt
 import time
 
 class Bridge(object):
-    def on_connect(self, client, userdata, flags, rc):
+    def __on_connect(self, client, userdata, flags, rc):
         #print('on_connect ' + str(rc)) #Debugging
         if rc == self.callback['id']:
             self.callback['pending'] = False
@@ -10,7 +10,7 @@ class Bridge(object):
             self.callback['error'] = rc
             self.callback['source'] = 'on_connect'
 
-    def on_publish(self, client, userdata, mid):
+    def __on_publish(self, client, userdata, mid):
         #print('on_pub ' + str(mid)) #Debugging
         if mid == self.callback['id']:
             self.callback['pending'] = False
@@ -19,7 +19,7 @@ class Bridge(object):
             self.callback['error'] = mid
             self.callback['source'] = 'on_publish'
 
-    def on_subscribe(self, client, userdata, mid, granted_qos):
+    def __on_subscribe(self, client, userdata, mid, granted_qos):
         #print('on_sub ' + str(mid)) #Debugging
         if mid == self.callback['id']:
             self.callback['pending'] = False
@@ -28,14 +28,14 @@ class Bridge(object):
             self.callback['error'] = mid
             self.callback['source'] = 'on_subscribe'
 
-    def on_disconnect(self, client, userdata, rc):
+    def __on_disconnect(self, client, userdata, rc):
         if rc == self.callback['id']:
             self.callback['pending'] = False
         else:
             self.callback['error'] = rc
             self.callback['source'] = 'on_disconnect'
 
-    def on_message(self, client, userdata, message): 
+    def __on_message(self, client, userdata, message): 
         for topic in self.messages:
             if topic['topic'] == message.topic:
                 received = str(message.payload, 'UTF-8')
@@ -68,64 +68,32 @@ class Bridge(object):
             self.client.tls_set(tls_version=mqtt.ssl.PROTOCOL_TLS)
             self.client.username_pw_set(user, key)
         
-        self.client.on_connect = self.on_connect
-        self.client.on_message = self.on_message
-        self.client.on_publish = self.on_publish
-        self.client.on_subscribe = self.on_subscribe
-        self.client.on_disconnect = self.on_disconnect
+        self.client.on_connect = self.__on_connect
+        self.client.on_message = self.__on_message
+        self.client.on_publish = self.__on_publish
+        self.client.on_subscribe = self.__on_subscribe
+        self.client.on_disconnect = self.__on_disconnect
 
-        self.await_broker_callback(
+        self.__await_broker_callback(
             self.client.connect,
             host, 
             port
         )
         self.client.loop_start()
         self.disconnected = False
-        
-    def subscribe(self, data):
-        if self.disconnected:
-            self.reconnect()
-        self.messages.append({
-            'topic': data['topic'],
-            'payload': None
-        })
-        self.await_broker_callback(
-            self.client.subscribe,
-            data['topic'],
-            data['qos']
-        )
-
-    def publish(self, data):
-        if self.disconnected:
-            self.reconnect()
-        self.messages.append({
-            'topic': data['topic'],
-            'payload': data['payload']
-        })
-        if data['retain'] == 1:
-            retain = True
-        else:
-            retain = False
-        self.await_broker_callback(
-            self.client.publish,
-            data['topic'],
-            data['payload'],
-            data['qos'],
-            retain
-        )
-
-    def disconnect(self):
-        self.await_broker_callback(self.client.disconnect)
+    
+    def __disconnect(self):
+        self.__await_broker_callback(self.client.disconnect)
         self.client.loop_stop()
         self.messages = []
         self.disconnected = True
 
-    def reconnect(self):
-        self.await_broker_callback(self.client.reconnect)
+    def __reconnect(self):
+        self.__await_broker_callback(self.client.reconnect)
         self.client.loop_start()
         self.disconnected = False
 
-    def await_broker_callback(self, action, *params):
+    def __await_broker_callback(self, action, *params):
         curr_attempts = 1
         while(curr_attempts <= self.allowed_callback_attempts):
             id = action(*params)
@@ -160,3 +128,41 @@ class Bridge(object):
             'error': None,
             'source': None
         }
+
+    def __get_data_on(self, topic):
+        for message in self.messages:
+            if topic == message.topic:
+                return message.payload
+        return None
+    
+    def subscribe(self, data):
+        if self.disconnected:
+            self.__reconnect()
+        self.messages.append({
+            'topic': data['topic'],
+            'payload': None
+        })
+        self.__await_broker_callback(
+            self.client.subscribe,
+            data['topic'],
+            data['qos']
+        )
+
+    def publish(self, data):
+        if self.disconnected:
+            self.__reconnect()
+        self.messages.append({
+            'topic': data['topic'],
+            'payload': data['payload']
+        })
+        if data['retain'] == 1:
+            retain = True
+        else:
+            retain = False
+        self.__await_broker_callback(
+            self.client.publish,
+            data['topic'],
+            data['payload'],
+            data['qos'],
+            retain
+        )
