@@ -66,7 +66,7 @@ class Adapter:
         if not self.error:
             for bridge in self.bridges:
                 responses.append(bridge.result)
-                print(bridge.messages)
+                #print(bridge.messages) #Debugging
                 for topic in bridge.messages:
                     create_measure = True
                     for measure in consensus:

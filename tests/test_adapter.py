@@ -28,7 +28,7 @@ def adapter_setup(test_data):
 ])
 def test_pub_sub_strings(test_data):
     result = adapter_setup(test_data)
-    #print(result)  
+    #print(result) #Debugging
     assert result['statusCode'] == 200
     assert result['jobRunID'] == job_run_id
     for topic in result['data']:
@@ -53,7 +53,7 @@ def test_pub_sub_strings(test_data):
 ])
 def test_pub_sub_floats(test_data):
     result = adapter_setup(test_data)
-    #print(result)
+    #print(result) #Debugging
     assert result['statusCode'] == 200
     assert result['jobRunID'] == job_run_id
     for topic in result['data']:
@@ -78,7 +78,7 @@ def test_pub_sub_floats(test_data):
 ])
 def test_pub_sub_ints(test_data):
     result = adapter_setup(test_data)
-    #print(result)
+    #print(result) #Debugging
     assert result['statusCode'] == 200
     assert result['jobRunID'] == job_run_id
     for topic in result['data']:
@@ -94,7 +94,7 @@ def test_pub_sub_ints(test_data):
 ])
 def test_error_catching(test_data):
     result = adapter_setup(test_data)
-    #print(result)
+    #print(result) #Debugging
     assert result['statusCode'] == 500
     assert result['jobRunID'] == job_run_id
     assert result['status'] == 'errored'

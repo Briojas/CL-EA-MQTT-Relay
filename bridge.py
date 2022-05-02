@@ -3,7 +3,7 @@ import time
 
 class Bridge(object):
     def on_connect(self, client, userdata, flags, rc):
-        #print('on_connect ' + str(rc))
+        #print('on_connect ' + str(rc)) #Debugging
         if rc == self.callback['id']:
             self.callback['pending'] = False
         else:
@@ -11,7 +11,7 @@ class Bridge(object):
             self.callback['source'] = 'on_connect'
 
     def on_publish(self, client, userdata, mid):
-        #print('on_pub ' + str(mid))
+        #print('on_pub ' + str(mid)) #Debugging
         if mid == self.callback['id']:
             self.callback['pending'] = False
             self.result = 'published'
@@ -20,7 +20,7 @@ class Bridge(object):
             self.callback['source'] = 'on_publish'
 
     def on_subscribe(self, client, userdata, mid, granted_qos):
-        #print('on_sub ' + str(mid))
+        #print('on_sub ' + str(mid)) #Debugging
         if mid == self.callback['id']:
             self.callback['pending'] = False
             self.result = 'subscribed'

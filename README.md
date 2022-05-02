@@ -4,12 +4,12 @@
 
 This template shows basic usecases of a Chainlink external adapter connecting a smart contract to an MQTT broker. It can be ran locally or in Docker.
 
-## External Adapter Setup
-1. Download and unzip the repo
+## Setup
+1. Download and unzip the repository.
 2. Install dependencies:
-    ```
-    pipenv install
-    ```
+      ```
+      pipenv install
+      ```
 3. Populate 'bridges.json' file:
     - **'name'**: Label describing this broker bridge
     - **'host'**: Domain name or IP address of the broker
@@ -17,23 +17,24 @@ This template shows basic usecases of a Chainlink external adapter connecting a 
     - **'user'**: Username for logging into private brokers
     - **'key'**: Password for logging into private broker
     - **'env'**: Flags if the 'host', 'user', and 'key' values are .env file variable names
-4. Create '.env' file with any private broker data 
-  - Be sure the variable names created match those listed in the 'bridges.json' file:
-    ```
-    JSON File:
-    "host": "PRIVATE_BROKER_DOMAIN"
+4. Create '.env' file with any private broker data.
+    - Be sure the variable names created match those listed in the 'bridges.json' file:
+      ```
+      JSON File:
+      "host": "PRIVATE_BROKER_DOMAIN"
 
-    .env File:
-    PRIVATE_BROKER_DOMAIN = some.broker.domain
-    ```
+      .env File:
+      PRIVATE_BROKER_DOMAIN = some.broker.domain
+      ```
 5. Build the docker image and run the container:
-    ```
-    docker build . -t cl-ea-mqtt-client
-    docker run -it -p 8080:8080 cl-ea-mqtt-client
-    ```
-6. [Setup the Chainlink Node Bridge](https://docs.chain.link/docs/node-operators/)
-7. [Create the Node Job](https://docs.chain.link/docs/jobs/)
+      ```
+      docker build . -t cl-ea-mqtt-client
+      docker run -it -p 8080:8080 cl-ea-mqtt-client
+      ```
+6. Setup the [node bridge](https://docs.chain.link/docs/node-operators/).
+7. Create the [node job](https://docs.chain.link/docs/jobs/).
     - See [oracleJobs](https://github.com/Briojas/CL-EA-MQTT-Client/tree/master/oracleJobs) directory for TOML examples utilizing this bridge
+8. Submit data/action requests via a [ChainlinkClient compatible hybrid smart contract.
   
 ## Baked-in Actions
 ### Publish
