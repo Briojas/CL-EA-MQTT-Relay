@@ -1,5 +1,5 @@
 import paho.mqtt.client as mqtt
-import time
+import time, requests, json
 
 class Bridge(object):
     def __on_connect(self, client, userdata, flags, rc):
@@ -166,3 +166,31 @@ class Bridge(object):
             data['qos'],
             retain
         )
+    
+    def ipfs(self, data):
+        subtask = data['topic']
+        cid = data['payload']
+        self.messages.append({
+            'topic': subtask,
+            'payload': cid
+        })
+        url = 'https://ipfs.io/ipfs/' + cid
+        site = requests.get(url)
+
+        fileIdentifier = 'filename='
+        fileType = '.json'
+        filenameStart = site.text.find(fileIdentifier)
+        filenameEnd = site.text.find(fileType, filenameStart)
+        filename = site.text[(filenameStart + len(fileIdentifier)):(filenameEnd + len(fileType))]
+        print(url + '/' + filename)
+        script = requests.get(url + '/' + filename).json()
+        print(script)
+        
+        
+
+
+    def __script(self, file):
+        
+
+
+        self.result = 'scriptExecuted'

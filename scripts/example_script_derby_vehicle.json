@@ -1,0 +1,132 @@
+{
+    "script":[
+        {
+            "action": "publish",
+            "data":[{
+                "topic": "/kart/fr",
+                "payload": 25,
+                "qos": 0,
+                "retain": true
+            },{
+                "topic": "/kart/fl",
+                "payload": 25,
+                "qos": 0,
+                "retain": true
+            },{
+                "topic": "/kart/bl",
+                "payload": 25,
+                "qos": 0,
+                "retain": true
+            },{
+                "topic": "/kart/br",
+                "payload": 25,
+                "qos": 0,
+                "retain": true
+            }]
+        },{
+            "action": "delay",
+            "data": 1000
+        },{
+            "action": "publish",
+            "data":[{
+                "topic": "/kart/fr",
+                "payload": 0,
+                "qos": 0,
+                "retain": true
+            },{
+                "topic": "/kart/fl",
+                "payload": 0,
+                "qos": 0,
+                "retain": true
+            },{
+                "topic": "/kart/bl",
+                "payload": 0,
+                "qos": 0,
+                "retain": true
+            },{
+                "topic": "/kart/br",
+                "payload": 0,
+                "qos": 0,
+                "retain": true
+            }]
+        },{
+            "action": "delay",
+            "data": 1000
+        },{
+            "action": "publish",
+            "data":[{
+                "topic": "/kart/fr",
+                "payload": -25,
+                "qos": 0,
+                "retain": true
+            },{
+                "topic": "/kart/fl",
+                "payload": -25,
+                "qos": 0,
+                "retain": true
+            },{
+                "topic": "/kart/bl",
+                "payload": -25,
+                "qos": 0,
+                "retain": true
+            },{
+                "topic": "/kart/br",
+                "payload": -25,
+                "qos": 0,
+                "retain": true
+            }]
+        },{
+            "action": "delay",
+            "data": 1000
+        },{
+            "action": "publish",
+            "data":[{
+                "topic": "/kart/fr",
+                "payload": 25,
+                "qos": 0,
+                "retain": true
+            },{
+                "topic": "/kart/fl",
+                "payload": -25,
+                "qos": 0,
+                "retain": true
+            },{
+                "topic": "/kart/bl",
+                "payload": -25,
+                "qos": 0,
+                "retain": true
+            },{
+                "topic": "/kart/br",
+                "payload": 25,
+                "qos": 0,
+                "retain": true
+            }]
+        },{
+            "action": "delay",
+            "data": 1000
+        },{
+            "action": "publish",
+            "data":[{
+                "topic": "/kart/fr",
+                "payload": 0,
+                "qos": 0,
+                "retain": true
+            },{
+                "topic": "/kart/fl",
+                "payload": 0,
+                "qos": 0,
+                "retain": true
+            },{
+                "topic": "/kart/bl",
+                "payload": 0,
+                "qos": 0,
+                "retain": true
+            },{
+                "topic": "/kart/br",
+                "payload": 0,
+                "qos": 0,
+                "retain": true
+            }]
+        }
+    ]
+}
