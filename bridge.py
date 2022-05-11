@@ -176,21 +176,33 @@ class Bridge(object):
         })
         url = 'https://ipfs.io/ipfs/' + cid
         site = requests.get(url)
-
+            #find the file
         fileIdentifier = 'filename='
         fileType = '.json'
         filenameStart = site.text.find(fileIdentifier)
         filenameEnd = site.text.find(fileType, filenameStart)
         filename = site.text[(filenameStart + len(fileIdentifier)):(filenameEnd + len(fileType))]
-        print(url + '/' + filename)
-        script = requests.get(url + '/' + filename).json()
-        print(script)
+        file = requests.get(url + '/' + filename).json()
+        if subtask == 'script':
+            self.result = self.__script(file)          
+
+    def __script(self, script):
+        for action in script['script']:
+            if action['action'] == 'publish':
+                for topic in action['data']:
+                    self.client.publish(
+                        topic['topic'],
+                        topic['payload'],
+                        topic['qos'],
+                        topic['retain'])
+            if action['action'] == 'subscribe':
+                for topic in action['data']:
+                    self.client.subscribe(
+                        topic['topic'],
+                        topic['qos'])
+            if action['action'] == 'delay':
+                time.sleep(action['data'])
+        return 'scripted'
+
+
         
-        
-
-
-    def __script(self, file):
-        
-
-
-        self.result = 'scriptExecuted'

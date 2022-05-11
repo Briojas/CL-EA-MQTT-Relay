@@ -10,7 +10,7 @@
             }]
         },{
             "action": "delay",
-            "data": 1000
+            "data": 1
         },{
             "action": "publish",
             "data":[{
