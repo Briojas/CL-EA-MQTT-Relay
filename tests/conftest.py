@@ -111,7 +111,7 @@ def ipfs_jobs(subtask):
     global jobs_ipfs_scripts
         #ipfs job construction
     jobs_ipfs_scripts = job_constructor('ipfs', ipfs_data_tuples('subtask', ipfs_script_cids))
-    if subtask is 'script':
+    if subtask == 'script':
         return jobs_ipfs_scripts
 
 def pubsub_data_tuples(self, action, payload_specific_topic, payload):
@@ -133,7 +133,7 @@ def pubsub_data_tuples(self, action, payload_specific_topic, payload):
             topic = main_topic + payload_specific_topic + qos_topic + retain_topic
             qos = qos_values[qos_topic]
             retain = retain_values[retain_topic]
-            if action is 'publish':
+            if action == 'publish':
                 tuples.append((
                     topic,
                     qos,
@@ -158,6 +158,7 @@ def ipfs_data_tuples(self, subtask, cids):
     return tuples
 
 def job_constructor(self, action, data_tuples):
+    global job_run_id
     builtJobs = []
     for job_tuple in data_tuples:
         builtJobs.append(
