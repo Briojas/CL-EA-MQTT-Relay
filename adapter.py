@@ -1,10 +1,10 @@
 from dotenv import load_dotenv
-#from sqlalchemy import null, true
 from bridge import Bridge
 import os, json, statistics
 
 class Adapter:
     bridges = []
+    bridge_hosts = []
     action_list = [action for action in dir(Bridge) if action.startswith('__') is False]
     action = ''
     error = False
@@ -36,7 +36,7 @@ class Adapter:
         with open(os.getcwd() + '/bridges.json', 'r') as readingFile:
             bridges = json.load(readingFile)
         for bridge in bridges['bridges']:
-            if bridge['host'] is not None:
+            if bridge['host'] is not None and bridge['host'] not in self.bridge_hosts:
                 if bridge['env']:
                     host = str(os.environ[bridge['host']])    
                     user = str(os.environ[bridge['user']])
@@ -50,7 +50,8 @@ class Adapter:
                     bridge['port'],
                     user,
                     key
-                ))        
+                ))
+                self.bridge_hosts.append(bridge['host'])
 
     def execute_bridges(self):
         if not self.error:
@@ -149,6 +150,7 @@ class Adapter:
         if not self.error:
             for bridge in self.bridges:
                 bridge.messages = []
+                bridge.result = 'failed'
 
     def result_success(self, data):
         self.result = {

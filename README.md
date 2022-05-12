@@ -37,15 +37,15 @@ This template shows basic usecases of a Chainlink external adapter connecting a 
 8. Submit [basic requests](https://docs.chain.link/docs/architecture-request-model/) via a hybrid smart contract.
   
 ## **Baked-in Actions**
-- **Publish** - Posts a singular payload to the Brokers defined on the topic specified with the quality of service level given. 
--  **Subscribe** - Gets a singular payload from the Brokers defined on the topic specified with the quality of service level given
--  **Script** - Pulls a file from IPFS at the hash given for more advanced and custom processing
+- **Publish** - Posts a payload to the Brokers defined on a topic specified with a quality of service level given. 
+-  **Subscribe** - Gets a payload from the Brokers defined on a topic specified with a quality of service level given
+-  **Script** - Pulls a file from IPFS at the CID given for more advanced and custom processing specified by the subtask given
 ### Inputs table:
 | action | topic | qos | payload | retain |
 | ----------- | ----------- | ----------- | ----------- | ----------- |
 | **publish**[^1] | address in Broker | quality of service level | data | store on Broker |
 | **subscribe**[^1] | address in Broker | quality of service level | ignored | ignored |
-| **ipfs** | ignored | ignored | IPFS CID[^2] | ignored |
+| **ipfs** | subtask specified | ignored | IPFS CID[^2] | ignored |
 
 [^1]: [HiveMQ: MQTT Essentials](https://www.hivemq.com/mqtt-essentials/)
 [^2]: [IPFS URL with hash](https://docs.ipfs.io/how-to/address-ipfs-on-web/)
@@ -68,13 +68,16 @@ This template shows basic usecases of a Chainlink external adapter connecting a 
         #utilize exsiting actions
           #publishing to a topic
         pubData = {'topic':'/someTopic/someInteger','qos':0,'payload':12,'retain':True}
+        self.publish(pubData)
+
           #subscribing to, and getting data published on, a topic:
-        subData = {'topic':'/someTopic/specificData','qos':0}
+        subData = {'topic':'/otherTopic/specificData','qos':0}
         self.subscribe(subData)
-        specificData = self.__get_data_from(subData['topic'])
-          #extracting data from files on IPFS
-        CID = 'Qme7ss3ARVgxv6rXqVPiikMJ8u2NLgmgszg13pYrDKEoiu'
-        jsonDict = self.ipfs(CID, 'json')
+        specificData = self.__get_data_from(subData['topic']) #grab data from subbed topic
+
+          #executing script stored IPFS
+        ipfsData = {'topic': 'script', 'payload': 'bafybeidcuj7x347s2ekyicsu2udaime4dzwf7v5qob446pfspx3j765n7m'}
+        self.ipfs(ipfsData)
 
         #utilize new internal functions
         self.__bar_processing(bar1, bar2, bar3, bar4)

@@ -1,0 +1,29 @@
+{
+    "script":[
+        {
+            "action": "publish",
+            "data":[{
+                "topic": "/foo",
+                "payload": 7,
+                "qos": 0,
+                "retain": true
+            }]
+        },{
+            "action": "delay",
+            "data": 1
+        },{
+            "action": "publish",
+            "data":[{
+                "topic": "/foo/bar",
+                "payload": 1.1,
+                "qos": 0,
+                "retain": true
+            },{
+                "topic": "/foo/bar/data/string",
+                "payload": "someString",
+                "qos": 0,
+                "retain": true
+            }]
+        }
+    ]
+}
