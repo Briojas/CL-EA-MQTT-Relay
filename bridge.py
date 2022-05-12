@@ -184,7 +184,7 @@ class Bridge(object):
         filename = site.text[(filenameStart + len(fileIdentifier)):(filenameEnd + len(fileType))]
         file = requests.get(url + '/' + filename).json()
         if subtask == 'script':
-            self.result = self.__script(file)          
+            self.result = self.__script(file)      
 
     def __script(self, script):
         for action in script['script']:

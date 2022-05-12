@@ -68,13 +68,16 @@ This template shows basic usecases of a Chainlink external adapter connecting a 
         #utilize exsiting actions
           #publishing to a topic
         pubData = {'topic':'/someTopic/someInteger','qos':0,'payload':12,'retain':True}
+        self.publish(pubData)
+
           #subscribing to, and getting data published on, a topic:
         subData = {'topic':'/otherTopic/specificData','qos':0}
         self.subscribe(subData)
-        specificData = self.__get_data_from(subData['topic'])
-          #extracting data from files on IPFS
-        cid = 'bafybeifuzupfst7soyc7oe2hiilgvm7h6m2myu5tk37dth3nm7c2ifrqqm'
-        jsonDict = self.ipfs(cid, 'json')
+        specificData = self.__get_data_from(subData['topic']) #grab data from subbed topic
+
+          #executing script stored IPFS
+        ipfsData = {'topic': 'script', 'payload': 'bafybeidcuj7x347s2ekyicsu2udaime4dzwf7v5qob446pfspx3j765n7m'}
+        self.ipfs(ipfsData)
 
         #utilize new internal functions
         self.__bar_processing(bar1, bar2, bar3, bar4)
