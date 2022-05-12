@@ -11,6 +11,7 @@ paho-mqtt = "==1.6.1"
 Flask = "==1.1.1"
 python-dotenv = "*"
 pytest-order = "*"
+requests = "*"
 
 [requires]
 python_version = "3.7"
